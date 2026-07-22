@@ -3,45 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>波浪造塔工程 - 結構解謎版</title>
+    <title>波浪造塔工程 - 進階輸入版</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
         .header { text-align: center; margin-bottom: 20px; }
         h1 { color: #2c3e50; margin: 0 0 10px 0; }
         
-        .game-panel { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 600px; text-align: center; }
+        .game-panel { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 650px; text-align: center; }
         
         .level-badge { background: #f39c12; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; display: inline-block; margin-bottom: 15px; }
         .target-box { font-size: 22px; color: #c0392b; font-weight: bold; padding: 15px; background: #fdedec; border: 2px dashed #e74c3c; border-radius: 10px; margin-bottom: 20px; }
-        .current-box { font-size: 26px; color: #2980b9; font-weight: bold; margin: 20px 0; min-height: 40px; padding: 10px; background: #eaf2f8; border-radius: 10px; }
+        .current-box { font-size: 26px; color: #2980b9; font-weight: bold; margin: 20px 0; min-height: 40px; padding: 10px; background: #eaf2f8; border-radius: 10px; transition: 0.3s; }
         
-        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        button { padding: 12px; font-size: 16px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; color: white; transition: 0.1s; }
-        button:active { transform: translateY(2px); }
-        button:disabled { background-color: #bdc3c7 !important; cursor: not-allowed; transform: none; }
+        .controls-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 20px; text-align: left; }
+        .control-item { display: flex; gap: 10px; align-items: center; background: #f9f9f9; padding: 10px; border-radius: 8px; border: 1px solid #eee; }
+        .control-item input { flex: 1; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; }
+        .control-item button { padding: 10px 15px; font-size: 15px; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; color: white; transition: 0.1s; white-space: nowrap; }
         
-        .btn-amp { background-color: #3498db; box-shadow: 0 4px 0 #2980b9; }
-        .btn-vshift { background-color: #9b59b6; box-shadow: 0 4px 0 #8e44ad; }
-        .btn-period { background-color: #e67e22; box-shadow: 0 4px 0 #d35400; }
-        .btn-hshift { background-color: #1abc9c; box-shadow: 0 4px 0 #16a085; }
-        .btn-reset { background-color: #7f8c8d; width: 100%; box-shadow: 0 4px 0 #707b7c; margin-bottom: 10px; }
+        .btn-amp { background-color: #3498db; box-shadow: 0 3px 0 #2980b9; }
+        .btn-period { background-color: #e67e22; box-shadow: 0 3px 0 #d35400; }
+        .btn-hshift { background-color: #1abc9c; box-shadow: 0 3px 0 #16a085; }
+        .btn-vshift { background-color: #9b59b6; box-shadow: 0 3px 0 #8e44ad; }
         
+        button:active { transform: translateY(2px); box-shadow: none !important; }
+        button:disabled { background-color: #bdc3c7 !important; box-shadow: 0 3px 0 #95a5a6 !important; cursor: not-allowed; transform: none; }
+        
+        .btn-reset { background-color: #7f8c8d; width: 100%; padding: 12px; font-size: 16px; font-weight: bold; color: white; border: none; border-radius: 8px; box-shadow: 0 4px 0 #707b7c; margin-bottom: 10px; cursor: pointer; }
+        .btn-reset:active { transform: translateY(2px); box-shadow: none; }
+
         #statusMessage { font-size: 18px; font-weight: bold; margin: 15px 0; min-height: 25px; color: #34495e; }
         
-        /* 驗收區塊 */
-        .verify-panel { display: none; background: #fff3e0; padding: 20px; border-radius: 10px; border: 2px solid #ffb300; margin-top: 20px; }
-        .verify-panel input { width: 60px; padding: 8px; margin: 0 10px; text-align: center; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; }
-        .btn-verify { background-color: #e74c3c; margin-top: 15px; width: 100%; box-shadow: 0 4px 0 #c0392b; }
+        /* 分項驗收區塊 */
+        .verify-panel { display: none; background: #fff3e0; padding: 20px; border-radius: 10px; border: 2px solid #ffb300; margin-top: 20px; text-align: left; }
+        .verify-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed #f3c27b; }
+        .verify-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .verify-row label { font-weight: bold; color: #d35400; width: 60px; font-size: 18px; }
+        .verify-row input { flex: 1; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; margin: 0 10px; }
+        .verify-row button { background-color: #e74c3c; box-shadow: 0 3px 0 #c0392b; padding: 8px 15px; }
+        .status-icon { width: 80px; text-align: right; font-size: 16px; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>🏗️ 波浪造塔工程</h1>
-        <p style="color: #7f8c8d;">請依序放置方塊，思考變換對方程式的影響</p>
+        <h1>🏗️ 波浪造塔工程：參數輸入版</h1>
+        <p style="color: #7f8c8d;">自行輸入變換數值，可輸入 <strong>pi</strong> 代表 <strong>π</strong></p>
     </div>
 
-    <div class="game-panel">
+    <div class="game-panel" id="gamePanel">
         <div class="level-badge" id="levelDisplay">第一關：牛刀小試</div>
         
         <div class="target-box" id="targetDisplay">目標藍圖： y = 3sin(x) - 2</div>
@@ -49,164 +58,235 @@
         <div style="color: #7f8c8d; font-size: 14px;">目前地基狀態：</div>
         <div class="current-box" id="currentDisplay">y = sin(x)</div>
 
-        <div id="statusMessage">請選擇要放置的方塊...</div>
+        <div id="statusMessage">請輸入數值並套用方塊...</div>
 
-        <div class="controls" id="blockControls">
-            <!-- 按鈕由 JS 動態生成 -->
+        <!-- 自訂輸入變換區 -->
+        <div class="controls-grid">
+            <div class="control-item">
+                <input type="text" id="inAmp" placeholder="輸入振幅倍數 (例: 3)">
+                <button id="btnAmp" class="btn-amp" onclick="applyTransform('amp')">套用振幅</button>
+            </div>
+            <div class="control-item">
+                <input type="text" id="inPeriod" placeholder="輸入 x 係數 (例: 2)">
+                <button id="btnPeriod" class="btn-period" onclick="applyTransform('period')">套用伸縮</button>
+            </div>
+            <div class="control-item">
+                <input type="text" id="inHShift" placeholder="輸入左右平移 (例: +pi/4)">
+                <button id="btnHShift" class="btn-hshift" onclick="applyTransform('hshift')">左右平移</button>
+            </div>
+            <div class="control-item">
+                <input type="text" id="inVShift" placeholder="輸入上下平移 (例: -2)">
+                <button id="btnVShift" class="btn-vshift" onclick="applyTransform('vshift')">上下平移</button>
+            </div>
         </div>
 
         <button class="btn-reset" onclick="resetLevel()">🔄 拆除重建 (退回原點)</button>
 
-        <!-- 工程驗收區 -->
+        <!-- 獨立工程驗收區 -->
         <div class="verify-panel" id="verifyPanel">
-            <h3 style="color: #d35400; margin-top: 0;">✅ 結構驗收</h3>
-            <p style="font-size: 14px; color: #555;">塔蓋好了！請計算此函數的屬性以完工：</p>
-            <div>
-                週期: <input type="text" id="ansPeriod" placeholder="ex: 2π">
-                最大值: <input type="text" id="ansMax" placeholder="數字">
-                最小值: <input type="text" id="ansMin" placeholder="數字">
+            <h3 style="color: #d35400; margin-top: 0; text-align: center;">✅ 結構驗收 (分項確認)</h3>
+            
+            <div class="verify-row">
+                <label>週期</label>
+                <input type="text" id="ansPeriod" placeholder="例: 2pi">
+                <button onclick="checkItem('Period')">確認</button>
+                <div class="status-icon" id="statusPeriod"></div>
             </div>
-            <button class="btn-verify" onclick="checkVerification()">提交驗收報告</button>
+            
+            <div class="verify-row">
+                <label>最大值</label>
+                <input type="text" id="ansMax" placeholder="例: 1">
+                <button onclick="checkItem('Max')">確認</button>
+                <div class="status-icon" id="statusMax"></div>
+            </div>
+
+            <div class="verify-row">
+                <label>最小值</label>
+                <input type="text" id="ansMin" placeholder="例: -5">
+                <button onclick="checkItem('Min')">確認</button>
+                <div class="status-icon" id="statusMin"></div>
+            </div>
         </div>
     </div>
 
 <script>
-    // 關卡資料庫
+    // 關卡資料庫 (答案皆以 π 儲存，系統會自動轉換使用者的 pi)
     const levels = [
         {
             title: "第一關：振幅與上下平移",
-            target: "3sin(x) - 2",
-            blocks: [
-                { type: "amp", value: "3", label: "振幅變 3 倍", class: "btn-amp" },
-                { type: "vshift", value: "- 2", label: "向下移 2 單位", class: "btn-vshift" }
-            ],
-            ans: { period: "2π", max: "1", min: "-5" }
+            target: "3sin(x)-2",
+            ans: { Period: "2π", Max: "1", Min: "-5" },
+            requiredBlocks: 2 // 這關需要按幾次按鈕才檢查
         },
         {
-            title: "第二關：週期與左右平移 (陷阱題)",
-            target: "sin(2(x + π/4))", // 正確需要先週期再平移
-            blocks: [
-                { type: "period", value: "2", label: "週期變為一半", class: "btn-period" },
-                { type: "hshift", value: "+ π/4", label: "向左移 π/4", class: "btn-hshift" }
-            ],
-            ans: { period: "π", max: "1", min: "-1" }
+            title: "第二關：週期與左右平移 (注意分配律陷阱)",
+            target: "sin(2(x+π/4))",
+            ans: { Period: "π", Max: "1", Min: "-1" },
+            requiredBlocks: 2
         },
         {
             title: "第三關：綜合大挑戰",
-            target: "2sin(1/2(x - π)) + 1",
-            blocks: [
-                { type: "amp", value: "2", label: "振幅變 2 倍", class: "btn-amp" },
-                { type: "vshift", value: "+ 1", label: "向上移 1 單位", class: "btn-vshift" },
-                { type: "period", value: "1/2", label: "週期變為 2 倍", class: "btn-period" },
-                { type: "hshift", value: "- π", label: "向右移 π", class: "btn-hshift" }
-            ],
-            ans: { period: "4π", max: "3", min: "-1" }
+            target: "2sin(1/2(x-π))+1",
+            ans: { Period: "4π", Max: "3", Min: "-1" },
+            requiredBlocks: 4
         }
     ];
 
     let currentLevel = 0;
     let currentExpression = "sin(x)";
     let isLevelComplete = false;
+    let blocksUsed = 0;
+    
+    // 追蹤三個答案是否都正確
+    let verifyStatus = { Period: false, Max: false, Min: false };
 
+    // 初始化關卡
     function initLevel() {
         const levelData = levels[currentLevel];
         document.getElementById('levelDisplay').innerText = levelData.title;
-        document.getElementById('targetDisplay').innerText = `目標藍圖： y = ${levelData.target}`;
+        
+        // 為了讓畫面好看，把目標字串稍微加點空格顯示
+        let displayTarget = levelData.target.replace(/sin/g, 'sin ').replace(/\+/g, ' + ').replace(/\-/g, ' - ');
+        // 修復首字負號或括號內的空格
+        displayTarget = displayTarget.replace(/\( \+ /g, '(+').replace(/\( \- /g, '(-');
+        document.getElementById('targetDisplay').innerText = `目標藍圖： y = ${displayTarget}`;
         
         currentExpression = "sin(x)";
+        blocksUsed = 0;
+        isLevelComplete = false;
+        verifyStatus = { Period: false, Max: false, Min: false };
         updateDisplay();
         
-        const controls = document.getElementById('blockControls');
-        controls.innerHTML = "";
-        levelData.blocks.forEach((block, index) => {
-            const btn = document.createElement('button');
-            btn.className = block.class;
-            btn.innerText = block.label;
-            btn.onclick = () => applyBlock(block, btn);
-            controls.appendChild(btn);
+        // 重置所有輸入框與按鈕
+        const types = ['Amp', 'Period', 'HShift', 'VShift'];
+        types.forEach(t => {
+            document.getElementById('in' + t).value = "";
+            document.getElementById('btn' + t).disabled = false;
+            document.getElementById('ans' + t === 'ansHShift' ? '' : 'ans' + t) && (document.getElementById('ans' + t).value = "");
+            document.getElementById('status' + t) && (document.getElementById('status' + t).innerHTML = "");
         });
-
-        document.getElementById('verifyPanel').style.display = "none";
-        document.getElementById('statusMessage').innerText = "請選擇要放置的方塊...";
-        document.getElementById('statusMessage').style.color = "#34495e";
         
-        document.getElementById('ansPeriod').value = "";
-        document.getElementById('ansMax').value = "";
-        document.getElementById('ansMin').value = "";
-        isLevelComplete = false;
+        document.getElementById('verifyPanel').style.display = "none";
+        document.getElementById('statusMessage').innerText = "請輸入數值並套用方塊...";
+        document.getElementById('statusMessage').style.color = "#34495e";
     }
 
     function updateDisplay() {
-        document.getElementById('currentDisplay').innerText = `y = ${currentExpression}`;
+        // 為了顯示美觀，處理空格
+        let prettyExpr = currentExpression.replace(/\+/g, ' + ').replace(/\-/g, ' - ');
+        prettyExpr = prettyExpr.replace(/\( \+ /g, '(+').replace(/\( \- /g, '(-');
+        document.getElementById('currentDisplay').innerText = `y = ${prettyExpr}`;
     }
 
-    // 核心數學變換邏輯 (嚴格模擬代數替換)
-    function applyBlock(block, btnElement) {
+    // 處理輸入字串：去空白並將 pi 轉成 π
+    function normalizeInput(val) {
+        return val.toLowerCase().replace(/pi/g, 'π').replace(/\s+/g, '');
+    }
+
+    // 套用數學變換
+    function applyTransform(type) {
         if (isLevelComplete) return;
 
-        if (block.type === "amp") {
-            if (currentExpression.includes("+") || currentExpression.includes("-") && !currentExpression.startsWith("sin")) {
-                currentExpression = `${block.value}(${currentExpression})`; // 觸發分配律陷阱
-            } else {
-                currentExpression = `${block.value}${currentExpression}`;
-            }
-        } 
-        else if (block.type === "vshift") {
-            currentExpression = `${currentExpression} ${block.value}`;
-        }
-        else if (block.type === "period") {
-            // 取代 x 為 bx
-            currentExpression = currentExpression.replace(/x/g, `${block.value}x`);
-        }
-        else if (block.type === "hshift") {
-            // 取代 x 為 (x - h)
-            currentExpression = currentExpression.replace(/x/g, `(x ${block.value})`);
+        let inputId = type === 'amp' ? 'inAmp' : type === 'period' ? 'inPeriod' : type === 'hshift' ? 'inHShift' : 'inVShift';
+        let rawVal = document.getElementById(inputId).value;
+        if (rawVal.trim() === "") {
+            alert("請先輸入數值喔！");
+            return;
         }
 
-        btnElement.disabled = true; // 用過的方塊不能再用
+        let val = normalizeInput(rawVal);
+
+        if (type === "amp") {
+            // 偵測是否已經有上下平移 (分配律陷阱)
+            let trap = false;
+            if (currentExpression.includes(')')) {
+                let afterSin = currentExpression.substring(currentExpression.lastIndexOf(')'));
+                if (afterSin.includes('+') || afterSin.includes('-')) trap = true;
+            }
+            
+            if (trap) {
+                currentExpression = `${val}(${currentExpression})`; 
+            } else {
+                currentExpression = `${val}${currentExpression}`;
+            }
+        } 
+        else if (type === "vshift") {
+            // 自動補齊正號如果學生只輸入數字
+            if(!val.startsWith('+') && !val.startsWith('-')) val = '+' + val;
+            currentExpression = `${currentExpression}${val}`;
+        }
+        else if (type === "period") {
+            // 取代 x 為 bx
+            currentExpression = currentExpression.replace(/x/g, `${val}x`);
+        }
+        else if (type === "hshift") {
+            // 取代 x 為 (x+h) 或 (x-h)
+            if(!val.startsWith('+') && !val.startsWith('-')) val = '+' + val;
+            currentExpression = currentExpression.replace(/x/g, `(x${val})`);
+        }
+
+        // 停用該按鈕避免重複點擊
+        let btnId = type === 'amp' ? 'btnAmp' : type === 'period' ? 'btnPeriod' : type === 'hshift' ? 'btnHShift' : 'btnVShift';
+        document.getElementById(btnId).disabled = true;
+        
+        blocksUsed++;
         updateDisplay();
         checkStructure();
     }
 
+    // 檢查方程式是否與目標一致
     function checkStructure() {
         const status = document.getElementById('statusMessage');
         const target = levels[currentLevel].target;
         
-        // 檢查按鈕是否全用完
-        const buttons = document.querySelectorAll('#blockControls button');
-        const allUsed = Array.from(buttons).every(btn => btn.disabled);
-
-        if (allUsed) {
-            if (currentExpression === target) {
-                status.innerHTML = "✨ 結構穩定！請進行最後的數據驗收！";
+        // 消除內部所有空白進行嚴格比對
+        let cleanCurrent = currentExpression.replace(/\s+/g, '');
+        
+        // 如果使用的方塊數量達到關卡需求，就進行判定
+        if (blocksUsed >= levels[currentLevel].requiredBlocks) {
+            if (cleanCurrent === target) {
+                status.innerHTML = "✨ 結構穩定！請進行最後的「分項數據驗收」！";
                 status.style.color = "#27ae60";
+                document.getElementById('currentDisplay').style.color = "#27ae60";
                 document.getElementById('verifyPanel').style.display = "block";
-                isLevelComplete = true;
+                isLevelComplete = true; // 鎖定上方變換區
             } else {
-                status.innerHTML = "💥 順序錯誤導致圖形變形 (分配律陷阱)！塔倒塌了！";
+                status.innerHTML = "💥 結構不符或產生分配律錯誤！塔倒塌了！";
                 status.style.color = "#c0392b";
                 document.getElementById('currentDisplay').style.color = "#c0392b";
             }
         }
     }
 
-    function checkVerification() {
-        const p = document.getElementById('ansPeriod').value.trim();
-        const max = document.getElementById('ansMax').value.trim();
-        const min = document.getElementById('ansMin').value.trim();
-        const ans = levels[currentLevel].ans;
+    // 獨立分項驗證
+    function checkItem(itemType) {
+        let inputVal = document.getElementById('ans' + itemType).value;
+        if(inputVal.trim() === "") return alert("請輸入數值");
 
-        if (p === ans.period && max === ans.max && min === ans.min) {
-            alert("🎉 驗收完美通過！準備進入下一關！");
-            currentLevel++;
-            if (currentLevel < levels.length) {
-                document.getElementById('currentDisplay').style.color = "#2980b9";
-                initLevel();
-            } else {
-                document.getElementById('game-panel').innerHTML = "<h2>🏆 恭喜你，成為三角造塔大師！</h2>";
-            }
+        let normInput = normalizeInput(inputVal);
+        let correctAns = levels[currentLevel].ans[itemType];
+
+        let statusDiv = document.getElementById('status' + itemType);
+        
+        if (normInput === correctAns) {
+            statusDiv.innerHTML = "<span style='color:#27ae60;'>✅ 正確</span>";
+            verifyStatus[itemType] = true;
         } else {
-            alert("❌ 驗收失敗！請重新檢查週期與極值的計算。");
+            statusDiv.innerHTML = "<span style='color:#c0392b;'>❌ 錯誤</span>";
+            verifyStatus[itemType] = false;
+        }
+
+        // 檢查是否三個都正確
+        if (verifyStatus.Period && verifyStatus.Max && verifyStatus.Min) {
+            setTimeout(() => {
+                alert("🎉 驗收完美通過！準備進入下一關！");
+                currentLevel++;
+                if (currentLevel < levels.length) {
+                    initLevel();
+                } else {
+                    document.getElementById('gamePanel').innerHTML = "<h2>🏆 恭喜你，成為三角造塔大師！<br><br>你已完全掌握變換規律！</h2>";
+                }
+            }, 600);
         }
     }
 
@@ -215,6 +295,7 @@
         initLevel();
     }
 
+    // 啟動第一關
     window.onload = initLevel;
 </script>
 
