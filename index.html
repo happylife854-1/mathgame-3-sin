@@ -5,153 +5,186 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>波浪造塔工程｜正弦函數圖形變換</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg: #0e1f33;
-    --panel: #14304f;
-    --panel-2: #0f2740;
-    --line: #2c4d72;
-    --line-soft: #1e3a5a;
-    --ink: #eaf1fb;
-    --ink-dim: #9db4cf;
-    --amber: #f5a83c;
-    --amber-dim: #b9812e;
-    --mint: #3ddc97;
-    --coral: #ef6a5a;
-    --blue: #5fb4ff;
-    --grid: #1c3959;
-    --radius: 14px;
+    --bg: #fbfcff;
+    --ink: #1f2544;
+    --ink-dim: #6b7290;
+    --card: #ffffff;
+    --line: #e7e9f5;
+
+    --violet: #5b6ee1;
+    --violet-deep: #4048c4;
+    --coral: #ff6b6b;
+    --coral-deep: #e94f4f;
+    --yellow: #ffd166;
+    --yellow-deep: #f2a900;
+    --mint: #06d6a0;
+    --mint-deep: #04a97f;
+    --pink: #ff4fa3;
+
+    --radius: 18px;
   }
   *{box-sizing:border-box;}
   body{
     margin:0;
     background:
-      radial-gradient(1100px 500px at 15% -10%, #1a3a5c 0%, transparent 60%),
-      radial-gradient(900px 500px at 110% 10%, #14304f 0%, transparent 55%),
+      radial-gradient(700px 380px at 8% -8%, #eef1ff 0%, transparent 60%),
+      radial-gradient(700px 380px at 100% 0%, #fff3e0 0%, transparent 55%),
       var(--bg);
     color:var(--ink);
     font-family:'Noto Sans TC', system-ui, sans-serif;
     padding:24px 16px 60px;
   }
-  .wrap{max-width:920px;margin:0 auto;}
+  .wrap{max-width:940px;margin:0 auto;}
   header{margin-bottom:18px;}
   .eyebrow{
     font-family:'JetBrains Mono',monospace;
-    font-size:12px;letter-spacing:.18em;color:var(--amber);
-    text-transform:uppercase;margin-bottom:6px;
+    font-size:12px;letter-spacing:.18em;color:var(--violet-deep);
+    text-transform:uppercase;margin-bottom:6px;font-weight:700;
   }
   h1{
     font-family:'Space Grotesk',sans-serif;
-    font-size:28px;margin:0 0 6px;
+    font-size:28px;margin:0 0 8px;color:var(--ink);
     display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
   }
   h1 .lv{
     font-family:'JetBrains Mono',monospace;
-    font-size:13px;background:var(--panel);border:1px solid var(--line);
-    padding:3px 10px;border-radius:999px;color:var(--mint);
+    font-size:13px;background:var(--mint);color:#023d2c;
+    padding:4px 12px;border-radius:999px;font-weight:700;
   }
-  .sub{color:var(--ink-dim);font-size:14px;line-height:1.6;max-width:640px;}
+  .sub{color:var(--ink-dim);font-size:14.5px;line-height:1.7;max-width:680px;}
 
   .target-card{
-    margin-top:16px;
-    background:linear-gradient(160deg, var(--panel), var(--panel-2));
-    border:1px solid var(--line);border-radius:var(--radius);
-    padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+    margin-top:16px;background:var(--card);
+    border:2px solid var(--line);border-left:8px solid var(--violet);
+    border-radius:var(--radius);
+    padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+    box-shadow:0 6px 18px rgba(91,110,225,.08);
   }
-  .target-card .lbl{font-size:12px;color:var(--ink-dim);letter-spacing:.08em;margin-bottom:4px;}
+  .target-card .lbl{font-size:12px;color:var(--ink-dim);letter-spacing:.06em;margin-bottom:4px;font-weight:700;}
   .target-fn{
-    font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--amber);
+    font-family:'JetBrains Mono',monospace;font-size:23px;font-weight:700;color:var(--violet-deep);
   }
   .restart-btn{
-    background:transparent;border:1px solid var(--line);color:var(--ink-dim);
-    padding:8px 14px;border-radius:999px;font-size:13px;cursor:pointer;
+    background:#fff;border:2px solid var(--line);color:var(--ink-dim);
+    padding:8px 16px;border-radius:999px;font-size:13px;cursor:pointer;font-weight:700;
     font-family:'Noto Sans TC',sans-serif;
   }
-  .restart-btn:hover{border-color:var(--coral);color:var(--coral);}
+  .restart-btn:hover{border-color:var(--coral);color:var(--coral-deep);}
 
   .graph-card{
-    margin-top:16px;background:var(--panel-2);border:1px solid var(--line);
-    border-radius:var(--radius);padding:12px 12px 6px;position:relative;overflow:hidden;
+    margin-top:16px;background:var(--card);border:2px solid var(--line);
+    border-radius:var(--radius);padding:14px 14px 6px;position:relative;overflow:hidden;
+    box-shadow:0 6px 18px rgba(31,37,68,.05);
   }
   .legend{
-    display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ink-dim);
-    padding:2px 10px 10px;font-family:'JetBrains Mono',monospace;
+    display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-dim);
+    padding:2px 10px 12px;font-family:'JetBrains Mono',monospace;font-weight:700;
   }
   .legend span{display:inline-flex;align-items:center;gap:6px;}
-  .swatch{width:18px;height:0;border-top:3px solid;display:inline-block;}
-  .sw-base{border-color:#5c7b9c;border-top-style:dashed;}
-  .sw-target{border-color:var(--amber);border-top-style:dashed;}
-  .sw-you{border-color:var(--blue);}
+  .swatch{width:20px;height:0;border-top:3px solid;display:inline-block;border-radius:2px;}
+  .sw-base{border-color:#c3c7de;border-top-style:dashed;}
+  .sw-target{border-color:var(--violet);border-top-style:dashed;}
+  .sw-you{border-color:var(--pink);}
 
   svg{width:100%;height:auto;display:block;}
-  .grid-line{stroke:var(--grid);stroke-width:1;}
-  .axis{stroke:#7d9bc0;stroke-width:1.6;}
-  .tick-dot{fill:#0e1f33;stroke:#cfe0f5;stroke-width:1.4;}
-  .tick-dot.strong{fill:#cfe0f5;}
-  .axis-label{fill:var(--ink-dim);font-family:'JetBrains Mono',monospace;font-size:12px;}
-  .axis-label.y{fill:var(--ink-dim);}
-  .curve-base{fill:none;stroke:#5c7b9c;stroke-width:2;stroke-dasharray:5 5;}
-  .curve-target{fill:none;stroke:var(--amber);stroke-width:2.5;stroke-dasharray:2 6;opacity:.85;}
-  .curve-you{fill:none;stroke:var(--blue);stroke-width:3;filter:drop-shadow(0 0 4px rgba(95,180,255,.5));transition:d .15s ease;}
-
-  .steps{display:flex;flex-direction:column;gap:14px;margin-top:16px;}
-  .step{
-    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
-    padding:16px 18px;transition:opacity .25s ease, filter .25s ease;
+  .grid-line{stroke:#eef0fa;stroke-width:1;}
+  .axis{stroke:#a9adc9;stroke-width:1.8;}
+  .tick-dot{fill:#fff;stroke:#8b8fb0;stroke-width:1.4;}
+  .tick-dot.strong{fill:#6b7290;}
+  .axis-label{fill:var(--ink-dim);font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;}
+  .curve-base{fill:none;stroke:#c3c7de;stroke-width:2;stroke-dasharray:5 5;}
+  .curve-target{fill:none;stroke:var(--violet);stroke-width:2.5;stroke-dasharray:2 6;opacity:.9;}
+  .curve-you{fill:none;stroke:var(--pink);stroke-width:3.2;filter:drop-shadow(0 0 5px rgba(255,79,163,.35));transition:d .15s ease;}
+  .graph-card.shake{animation:shake .45s;}
+  @keyframes shake{
+    10%,90%{transform:translateX(-2px);}
+    20%,80%{transform:translateX(4px);}
+    30%,50%,70%{transform:translateX(-8px);}
+    40%,60%{transform:translateX(8px);}
   }
-  .step.locked{opacity:.42;filter:grayscale(.4);pointer-events:none;}
-  .step.done{border-color:var(--mint);}
+
+  .steps{display:flex;flex-direction:column;gap:16px;margin-top:16px;}
+  .step{
+    background:var(--card);border:2px solid var(--line);border-radius:var(--radius);
+    padding:18px 20px;transition:opacity .25s ease, filter .25s ease;
+    box-shadow:0 6px 18px rgba(31,37,68,.05);
+  }
+  .step.locked{opacity:.4;filter:grayscale(.5);pointer-events:none;}
+  .step.done{border-color:var(--mint);border-width:2px;}
   .step-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;}
   .step-title{
-    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;
     display:flex;align-items:center;gap:8px;
   }
   .step-title .tag{
-    font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--bg);
-    background:var(--amber);padding:2px 8px;border-radius:999px;font-weight:700;
+    font-family:'JetBrains Mono',monospace;font-size:11px;color:#fff;
+    background:var(--coral);padding:3px 10px;border-radius:999px;font-weight:700;
   }
   .step.done .step-title .tag{background:var(--mint);}
-  .step-note{font-size:12.5px;color:var(--ink-dim);margin-bottom:12px;line-height:1.6;}
-  .field-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px;}
+  .step-note{font-size:13px;color:var(--ink-dim);margin-bottom:14px;line-height:1.7;}
+  .step-note b{color:var(--ink);}
+
+  .order-picker{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+  .order-opt{
+    flex:1 1 220px;border:2px solid var(--line);border-radius:12px;padding:12px 14px;
+    cursor:pointer;font-size:13.5px;background:#fbfbff;transition:all .15s ease;
+  }
+  .order-opt b{display:block;font-size:14.5px;margin-bottom:3px;font-family:'Space Grotesk',sans-serif;}
+  .order-opt.selected{border-color:var(--violet);background:#f1f2fe;box-shadow:0 0 0 3px rgba(91,110,225,.15);}
+  .order-opt:hover{border-color:var(--violet);}
+
+  .field-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px;}
   .field{display:flex;flex-direction:column;gap:6px;min-width:150px;}
-  .field label{font-size:12.5px;color:var(--ink-dim);}
+  .field label{font-size:12.5px;color:var(--ink-dim);font-weight:700;}
   .field input{
-    background:var(--panel-2);border:1px solid var(--line);color:var(--ink);
-    padding:9px 10px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:15px;
+    background:#fbfbff;border:2px solid var(--line);color:var(--ink);
+    padding:9px 10px;border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:15px;
     width:150px;
   }
-  .field input:focus{outline:2px solid var(--blue);outline-offset:1px;}
-  .field .hint{font-size:11px;color:#6f8ba9;}
-  .btn-row{display:flex;gap:10px;flex-wrap:wrap;}
+  .field input:focus{outline:none;border-color:var(--violet);}
+  .field .hint{font-size:11px;color:#9296b5;}
+  .btn-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
   button.action{
-    font-family:'Noto Sans TC',sans-serif;font-weight:500;font-size:14px;
-    padding:9px 18px;border-radius:9px;cursor:pointer;border:1px solid transparent;
+    font-family:'Noto Sans TC',sans-serif;font-weight:700;font-size:14px;
+    padding:10px 20px;border-radius:999px;cursor:pointer;border:2px solid transparent;
   }
-  .btn-reset{background:transparent;border-color:var(--line);color:var(--ink-dim);}
-  .btn-reset:hover{border-color:var(--coral);color:var(--coral);}
-  .btn-confirm{background:var(--amber);color:#20130a;font-weight:700;}
-  .btn-confirm:hover{background:#ffb659;}
-  .btn-confirm:disabled{background:var(--line);color:#6f8ba9;cursor:not-allowed;}
-  .confirmed-summary{font-family:'JetBrains Mono',monospace;font-size:13.5px;color:var(--mint);}
+  .btn-reset{background:#fff;border-color:var(--line);color:var(--ink-dim);}
+  .btn-reset:hover{border-color:var(--coral);color:var(--coral-deep);}
+  .btn-confirm{background:var(--yellow);color:#5a3b00;}
+  .btn-confirm:hover{background:var(--yellow-deep);color:#3d2700;}
+  .btn-confirm:disabled{background:#eee;color:#aaa;cursor:not-allowed;}
+  .confirmed-summary{font-family:'JetBrains Mono',monospace;font-size:13.5px;color:var(--mint-deep);margin-top:10px;font-weight:700;}
+
+  .hint-toggle{
+    font-size:12.5px;color:var(--violet-deep);background:none;border:none;cursor:pointer;
+    text-decoration:underline;padding:0;margin-bottom:10px;font-weight:700;font-family:'Noto Sans TC',sans-serif;
+  }
+  .hint-box{
+    display:none;background:#f1f2fe;border:1px solid #dfe1fa;border-radius:10px;
+    padding:12px 14px;font-size:12.5px;color:var(--ink-dim);line-height:1.8;margin-bottom:14px;
+  }
+  .hint-box.show{display:block;}
+  .hint-box code{background:#e4e6fb;padding:1px 5px;border-radius:5px;color:var(--violet-deep);}
 
   .check-row{display:flex;align-items:center;gap:10px;}
   .check-row .status{font-size:16px;width:20px;text-align:center;}
-  .ok{color:var(--mint);}
-  .bad{color:var(--coral);}
+  .ok{color:var(--mint-deep);}
+  .bad{color:var(--coral-deep);}
 
   .result{
-    margin-top:6px;padding:14px 16px;border-radius:10px;font-size:14px;line-height:1.7;
-    display:none;
+    margin-top:10px;padding:14px 16px;border-radius:12px;font-size:14px;line-height:1.8;display:none;
   }
   .result.show{display:block;}
-  .result.pass{background:rgba(61,220,151,.1);border:1px solid var(--mint);}
-  .result.fail{background:rgba(239,106,90,.1);border:1px solid var(--coral);}
+  .result.pass{background:#e9fbf5;border:2px solid var(--mint);}
+  .result.fail{background:#fff0f0;border:2px solid var(--coral);}
   .next-btn{
-    margin-top:10px;background:var(--mint);color:#052818;font-weight:700;
-    border:none;padding:10px 20px;border-radius:9px;cursor:pointer;font-size:14px;
+    margin-top:10px;background:var(--mint);color:#023d2c;font-weight:700;
+    border:none;padding:11px 22px;border-radius:999px;cursor:pointer;font-size:14px;
   }
-  footer{margin-top:22px;font-size:12px;color:#557294;line-height:1.7;}
+  footer{margin-top:22px;font-size:12.5px;color:#9296b5;line-height:1.8;}
 </style>
 </head>
 <body>
@@ -159,7 +192,7 @@
   <header>
     <div class="eyebrow">STACKING UP · 波浪造塔工程</div>
     <h1>正弦函數造塔工程 <span class="lv" id="levelTag">LEVEL 1</span></h1>
-    <div class="sub">目標函數已經給定。請依照課本教的順序 — <b>先伸縮，再平移</b> — 一步一步把塔疊起來。每一步都可以先試、按「重來」清空重試，確定沒問題後再按「確認」鎖定，不會因為打錯就整關重來。</div>
+    <div class="sub">目標函數已經給定。這次你要自己決定「先伸縮再平移」還是「先平移再伸縮」，並填入對應的數字——同一個目標函數，兩種順序需要的數字不一定相同，選錯順序又套錯數字，塔就蓋歪了！</div>
   </header>
 
   <div class="target-card">
@@ -170,7 +203,7 @@
     <button class="restart-btn" id="restartBtn">↺ 重新開始本關</button>
   </div>
 
-  <div class="graph-card">
+  <div class="graph-card" id="graphCard">
     <div class="legend">
       <span><i class="swatch sw-base"></i> 基底 y = sin x</span>
       <span><i class="swatch sw-target"></i> 目標圖形（對齊用）</span>
@@ -180,22 +213,48 @@
   </div>
 
   <div class="steps">
-    <!-- STEP 1: 伸縮 -->
+    <!-- STEP 1: 建構函數（伸縮 + 平移 一起做，順序自選） -->
     <div class="step" id="step1">
       <div class="step-head">
-        <div class="step-title"><span class="tag">STEP 1</span> 伸縮工程（先做）</div>
+        <div class="step-title"><span class="tag">STEP 1</span> 造塔工程：選順序、填數字</div>
       </div>
-      <div class="step-note">先決定「振幅」（把圖形垂直拉伸幾倍）與「水平伸縮倍數 b」（決定週期，函數會變成 y = a·sin(b·x)）。輸入後右邊的藍色曲線會即時預覽。</div>
+      <div class="step-note">先選一種操作順序，再填入<b>振幅 a</b>、<b>水平伸縮 b</b>、<b>水平平移 h</b>、<b>垂直平移 d</b>。輸入的同時右邊粉紅色曲線會即時預覽，最後按「確認」看看是否精準疊上目標圖形（紫色虛線）。</div>
+
+      <button class="hint-toggle" id="hintToggle">💡 兩種順序的數字關係，我還是不懂……</button>
+      <div class="hint-box" id="hintBox">
+        設 y = sin x 依「先伸縮（a, b）再平移（h, d）」得到 <code>a·sin(b(x−h)) + d</code>——這就是目標函數本身長的樣子。<br><br>
+        如果你想「先平移（h, d）再伸縮（a, b）」，會得到 <code>a·sin(bx − h) + a·d</code>。<br><br>
+        想讓兩者畫出同一個圖形，「先平移再伸縮」時要填入的 <b>h</b> 要改成 <b>b×（原本的 h）</b>，<b>d</b> 要改成 <b>（原本的 d）÷ a</b>，a、b 不變。動手試算看看，再輸入下面的欄位！
+      </div>
+
+      <div class="order-picker">
+        <div class="order-opt selected" data-order="scaleFirst" id="optScaleFirst">
+          <b>🔧 先伸縮，再平移</b>
+          y = sin x → 拉伸/壓縮 → 再整體平移
+        </div>
+        <div class="order-opt" data-order="shiftFirst" id="optShiftFirst">
+          <b>🔀 先平移，再伸縮</b>
+          y = sin x → 先整體平移 → 再拉伸/壓縮
+        </div>
+      </div>
+
       <div class="field-row">
         <div class="field">
           <label>振幅倍數 a</label>
           <input type="text" id="inputA" placeholder="例如 3">
-          <span class="hint">垂直方向伸縮倍數</span>
         </div>
         <div class="field">
           <label>水平伸縮倍數 b</label>
           <input type="text" id="inputB" placeholder="例如 1">
-          <span class="hint">y = sin(b·x)，週期 = 2π/b</span>
+        </div>
+        <div class="field">
+          <label>水平平移 h</label>
+          <input type="text" id="inputH" placeholder="例如 pi/3 或 0">
+          <span class="hint">可直接打 pi，例如 pi/3</span>
+        </div>
+        <div class="field">
+          <label>垂直平移 d</label>
+          <input type="text" id="inputD" placeholder="例如 1">
         </div>
       </div>
       <div class="btn-row">
@@ -204,36 +263,12 @@
       </div>
     </div>
 
-    <!-- STEP 2: 平移 -->
+    <!-- STEP 2: 最終驗收 -->
     <div class="step locked" id="step2">
       <div class="step-head">
-        <div class="step-title"><span class="tag">STEP 2</span> 平移工程（後做）</div>
+        <div class="step-title"><span class="tag">STEP 2</span> 塔頂驗收：讀出圖形性質</div>
       </div>
-      <div class="step-note">在伸縮後的圖形上，決定「水平平移 h」與「垂直平移 d」，函數會變成 y = a·sin(b·(x − h)) + d。水平平移可以直接打 <b>pi</b>，系統會自動辨識成 π（例如輸入 pi/3 代表 π/3）。</div>
-      <div class="field-row">
-        <div class="field">
-          <label>水平平移 h</label>
-          <input type="text" id="inputH" placeholder="例如 pi/3 或 -pi/4">
-          <span class="hint">正值＝向右移，負值＝向左移；可輸入 pi</span>
-        </div>
-        <div class="field">
-          <label>垂直平移 d</label>
-          <input type="text" id="inputD" placeholder="例如 1">
-          <span class="hint">正值＝向上移，負值＝向下移</span>
-        </div>
-      </div>
-      <div class="btn-row">
-        <button class="action btn-reset" id="reset2">重來</button>
-        <button class="action btn-confirm" id="confirm2">確認</button>
-      </div>
-    </div>
-
-    <!-- STEP 3: 最終驗收 -->
-    <div class="step locked" id="step3">
-      <div class="step-head">
-        <div class="step-title"><span class="tag">STEP 3</span> 塔頂驗收：讀出圖形性質</div>
-      </div>
-      <div class="step-note">塔身已經完成！請根據你建構出的圖形，分別填入下列三個值再一起送出。無理數 π 一樣可以直接打 <b>pi</b>（例如 2pi、2pi/3、-pi/2）。</div>
+      <div class="step-note">塔身完成！請根據目標圖形分別填入最大值、最小值、週期。π 一樣可以直接打 <b>pi</b>（例如 2pi、2pi/3、-pi/2）。</div>
       <div class="field-row">
         <div class="field">
           <label>最大值</label>
@@ -249,15 +284,15 @@
         </div>
       </div>
       <div class="btn-row">
-        <button class="action btn-reset" id="reset3">重來</button>
-        <button class="action btn-confirm" id="confirm3">揭曉答案</button>
+        <button class="action btn-reset" id="reset2">重來</button>
+        <button class="action btn-confirm" id="confirm2">揭曉答案</button>
       </div>
       <div class="result" id="resultBox"></div>
     </div>
   </div>
 
   <footer>
-    📐 小提醒：課本強調「因為伸縮可能改變振幅與週期，所以要先伸縮、再平移」——如果順序做反了，即使最後湊出視覺上差不多的圖，也不會是正確的變換過程。這款遊戲用 STEP 1 / STEP 2 的順序把這個規則內建進了關卡結構裡。
+    📐 小提醒：課本教的「先伸縮、再平移」是最直覺、可以直接套公式 y = a·sin(b(x−h)) + d 的順序。「先平移再伸縮」不是不能用，只是平移量會被後面的伸縮再放大一次，所以填入的數字要相應調整——這正是這一關要練習的重點。
   </footer>
 </div>
 
@@ -314,8 +349,8 @@
   // ---------- level generator ----------
   const LEVELS = [
     {a:3, b:1, h:0, d:1},
-    {a:2, b:1, h:Math.PI/2, d:0},
-    {a:2, b:2, h:Math.PI/4, d:-1},
+    {a:2, b:1, h:Math.PI/2, d:-1},
+    {a:2, b:2, h:Math.PI/4, d:1},
   ];
   let levelIndex = 0;
   let target = {...LEVELS[0]};
@@ -323,7 +358,7 @@
   function randomLevel(){
     const aChoices=[2,3,4,-2];
     const bChoices=[1,1,2,3];
-    const hChoices=[0,Math.PI/2,Math.PI/3,Math.PI/4,Math.PI/6,-Math.PI/2,-Math.PI/3,-Math.PI/4];
+    const hChoices=[0,Math.PI/2,Math.PI/3,Math.PI/4,Math.PI/6,-Math.PI/2,-Math.PI/3];
     const dChoices=[0,1,-1,2,-2];
     return {
       a: aChoices[Math.floor(Math.random()*aChoices.length)],
@@ -335,6 +370,7 @@
 
   // ---------- graph geometry ----------
   const svg = document.getElementById('graphSvg');
+  const graphCard = document.getElementById('graphCard');
   const W=900,H=460, marginL=50, marginR=24, marginT=20, marginB=40;
   const plotW = W-marginL-marginR, plotH = H-marginT-marginB;
   const xMax = 2.25*Math.PI;
@@ -346,159 +382,157 @@
   function px(x){ return originX + x*scaleX; }
   function py(y){ return originY - y*scaleY; }
 
-  function buildPathD(a,b,h,d){
-    const N=420;
-    let d0 = -xMax, d1 = xMax;
+  function buildPathD(fn){
+    const N=440;
     let parts=[];
     for(let i=0;i<=N;i++){
-      const x = d0 + (d1-d0)*i/N;
-      const y = a*Math.sin(b*(x-h))+d;
+      const x = -xMax + (2*xMax*i/N);
+      let y = fn(x);
+      if(!isFinite(y)) y = 0;
       const cy = Math.max(-yMax*1.3, Math.min(yMax*1.3, y));
       parts.push((i===0?"M":"L")+px(x).toFixed(1)+","+py(cy).toFixed(1));
     }
     return parts.join(" ");
   }
+  function scaleFirstFn(a,b,h,d){ return x=> a*Math.sin(b*(x-h))+d; }
+  function shiftFirstFn(a,b,h,d){ return x=> a*(Math.sin(b*x-h)+d); }
+  function targetFn(t){ return scaleFirstFn(t.a,t.b,t.h,t.d); }
 
   function drawStaticGrid(){
     let g = "";
-    // horizontal grid at integers
     for(let i=-yMax;i<=yMax;i++){
       g += `<line class="grid-line" x1="${marginL}" y1="${py(i)}" x2="${W-marginR}" y2="${py(i)}"/>`;
     }
-    // vertical grid at pi/2 steps
     for(let k=-4;k<=4;k++){
       const x = k*Math.PI/2;
       g += `<line class="grid-line" x1="${px(x)}" y1="${marginT}" x2="${px(x)}" y2="${H-marginB}"/>`;
     }
-    // axes
     g += `<line class="axis" x1="${marginL}" y1="${originY}" x2="${W-marginR}" y2="${originY}"/>`;
     g += `<line class="axis" x1="${originX}" y1="${marginT}" x2="${originX}" y2="${H-marginB}"/>`;
-    // x ticks with dots + labels at every pi/2
     for(let k=-4;k<=4;k++){
       const x = k*Math.PI/2;
       const strong = (k%2===0);
       g += `<circle class="tick-dot ${strong?'strong':''}" cx="${px(x)}" cy="${originY}" r="${strong?4:3}"/>`;
       if(k!==0){
-        const label = formatPi(x);
-        g += `<text class="axis-label" x="${px(x)}" y="${originY+18}" text-anchor="middle">${label}</text>`;
+        g += `<text class="axis-label" x="${px(x)}" y="${originY+18}" text-anchor="middle">${formatPi(x)}</text>`;
       } else {
         g += `<text class="axis-label" x="${px(x)-10}" y="${originY+18}" text-anchor="middle">0</text>`;
       }
     }
-    // y ticks with labels at every integer
     for(let i=-yMax;i<=yMax;i++){
       if(i===0) continue;
       g += `<circle class="tick-dot" cx="${originX}" cy="${py(i)}" r="3"/>`;
-      g += `<text class="axis-label y" x="${originX-12}" y="${py(i)+4}" text-anchor="end">${i}</text>`;
+      g += `<text class="axis-label" x="${originX-12}" y="${py(i)+4}" text-anchor="end">${i}</text>`;
     }
     return g;
   }
 
-  let curveLayer;
   function initSvg(){
     svg.innerHTML = drawStaticGrid() +
       `<path class="curve-base" id="curveBase"/>` +
       `<path class="curve-target" id="curveTarget"/>` +
       `<path class="curve-you" id="curveYou"/>`;
-    document.getElementById('curveBase').setAttribute('d', buildPathD(1,1,0,0));
+    document.getElementById('curveBase').setAttribute('d', buildPathD(x=>Math.sin(x)));
   }
-
   function redrawTarget(){
-    document.getElementById('curveTarget').setAttribute('d', buildPathD(target.a,target.b,target.h,target.d));
+    document.getElementById('curveTarget').setAttribute('d', buildPathD(targetFn(target)));
   }
-
-  let live = {a:1,b:1,h:0,d:0};
   function redrawYou(){
-    document.getElementById('curveYou').setAttribute('d', buildPathD(live.a,live.b,live.h,live.d));
+    const fn = currentOrder==='scaleFirst' ? scaleFirstFn(liveA,liveB,liveH,liveD) : shiftFirstFn(liveA,liveB,liveH,liveD);
+    document.getElementById('curveYou').setAttribute('d', buildPathD(fn));
   }
 
-  // ---------- state / steps ----------
+  // ---------- state ----------
   const el = id => document.getElementById(id);
-  const step1 = el('step1'), step2 = el('step2'), step3 = el('step3');
-  const inputA = el('inputA'), inputB = el('inputB');
-  const inputH = el('inputH'), inputD = el('inputD');
+  const step1 = el('step1'), step2 = el('step2');
+  const inputA = el('inputA'), inputB = el('inputB'), inputH = el('inputH'), inputD = el('inputD');
   const inputMax = el('inputMax'), inputMin = el('inputMin'), inputPeriod = el('inputPeriod');
+  let currentOrder = 'scaleFirst';
+  let liveA=1, liveB=1, liveH=0, liveD=0;
+  let step1Done=false;
 
-  let confirmed = {a:1,b:1,h:0,d:0};
-  let step1Done=false, step2Done=false;
-
-  function updateFromStep1Inputs(){
-    if(step1Done) return;
-    const a = parseMathInput(inputA.value);
-    const b = parseMathInput(inputB.value);
-    live.a = isFinite(a) ? a : 1;
-    live.b = (isFinite(b) && b!==0) ? b : 1;
-    live.h = confirmed.h; live.d = confirmed.d;
+  function readInputs(){
+    const a = parseMathInput(inputA.value); liveA = isFinite(a)?a:1;
+    const b = parseMathInput(inputB.value); liveB = (isFinite(b)&&b!==0)?b:1;
+    const h = parseMathInput(inputH.value); liveH = isFinite(h)?h:0;
+    const d = parseMathInput(inputD.value); liveD = isFinite(d)?d:0;
     redrawYou();
   }
-  function updateFromStep2Inputs(){
-    if(!step1Done || step2Done) return;
-    const h = parseMathInput(inputH.value);
-    const d = parseMathInput(inputD.value);
-    live.a = confirmed.a; live.b = confirmed.b;
-    live.h = isFinite(h) ? h : 0;
-    live.d = isFinite(d) ? d : 0;
+  [inputA,inputB,inputH,inputD].forEach(i=> i.addEventListener('input', ()=>{ if(!step1Done) readInputs(); }));
+
+  el('optScaleFirst').addEventListener('click', ()=>{ if(step1Done) return; setOrder('scaleFirst'); });
+  el('optShiftFirst').addEventListener('click', ()=>{ if(step1Done) return; setOrder('shiftFirst'); });
+  function setOrder(order){
+    currentOrder = order;
+    el('optScaleFirst').classList.toggle('selected', order==='scaleFirst');
+    el('optShiftFirst').classList.toggle('selected', order==='shiftFirst');
     redrawYou();
   }
 
-  inputA.addEventListener('input', updateFromStep1Inputs);
-  inputB.addEventListener('input', updateFromStep1Inputs);
-  inputH.addEventListener('input', updateFromStep2Inputs);
-  inputD.addEventListener('input', updateFromStep2Inputs);
+  el('hintToggle').addEventListener('click', ()=>{
+    el('hintBox').classList.toggle('show');
+  });
 
   el('reset1').addEventListener('click', ()=>{
-    inputA.value=''; inputB.value='';
-    live.a=1; live.b=1; redrawYou();
+    inputA.value=''; inputB.value=''; inputH.value=''; inputD.value='';
+    liveA=1; liveB=1; liveH=0; liveD=0;
+    redrawYou();
   });
   el('reset2').addEventListener('click', ()=>{
-    inputH.value=''; inputD.value='';
-    live.h=0; live.d=0; redrawYou();
-  });
-  el('reset3').addEventListener('click', ()=>{
     inputMax.value=''; inputMin.value=''; inputPeriod.value='';
-    el('resultBox').className='result';
-    el('resultBox').innerHTML='';
+    el('resultBox').className='result'; el('resultBox').innerHTML='';
   });
 
   el('confirm1').addEventListener('click', ()=>{
-    const a = parseMathInput(inputA.value);
-    const b = parseMathInput(inputB.value);
-    if(!isFinite(a) || !isFinite(b) || b===0){
-      flashInvalid([inputA,inputB]);
+    const a=parseMathInput(inputA.value), b=parseMathInput(inputB.value);
+    const h=parseMathInput(inputH.value), d=parseMathInput(inputD.value);
+    if(!isFinite(a)||!isFinite(b)||b===0||!isFinite(h)||!isFinite(d)){
+      flashInvalid([inputA,inputB,inputH,inputD]);
       return;
     }
-    confirmed.a=a; confirmed.b=b;
-    step1Done=true;
-    inputA.disabled=true; inputB.disabled=true;
-    el('confirm1').disabled=true; el('reset1').disabled=true;
-    step1.classList.add('done');
-    const summary = document.createElement('div');
-    summary.className='confirmed-summary';
-    summary.textContent = `✓ 已鎖定：a = ${fmtNum(a)}，b = ${fmtNum(b)} → 目前圖形 y = ${fmtNum(a)}·sin(${fmtNum(b)}x)`;
-    step1.appendChild(summary);
-    step2.classList.remove('locked');
+    liveA=a; liveB=b; liveH=h; liveD=d;
+    redrawYou();
+
+    const userFn = currentOrder==='scaleFirst' ? scaleFirstFn(a,b,h,d) : shiftFirstFn(a,b,h,d);
+    const tFn = targetFn(target);
+    let maxDiff = 0;
+    for(let i=0;i<=80;i++){
+      const x = -xMax + (2*xMax*i/80);
+      maxDiff = Math.max(maxDiff, Math.abs(userFn(x)-tFn(x)));
+    }
+    const matched = maxDiff < 0.05;
+
+    if(matched){
+      step1Done = true;
+      [inputA,inputB,inputH,inputD].forEach(i=>i.disabled=true);
+      el('confirm1').disabled=true; el('reset1').disabled=true;
+      el('optScaleFirst').style.pointerEvents='none'; el('optShiftFirst').style.pointerEvents='none';
+      step1.classList.add('done');
+      const summary = document.createElement('div');
+      summary.className='confirmed-summary';
+      const orderLabel = currentOrder==='scaleFirst' ? '先伸縮，再平移' : '先平移，再伸縮';
+      summary.textContent = `✓ 塔身完美對齊！你選的順序：${orderLabel}，數字 a=${fmtNum(a)}, b=${fmtNum(b)}, h=${formatPi(h)}, d=${fmtNum(d)}`;
+      step1.appendChild(summary);
+      step2.classList.remove('locked');
+    } else {
+      graphCard.classList.remove('shake'); void graphCard.offsetWidth; graphCard.classList.add('shake');
+      showStep1Fail();
+    }
   });
+
+  function showStep1Fail(){
+    let box = document.getElementById('step1FailBox');
+    if(!box){
+      box = document.createElement('div');
+      box.id='step1FailBox';
+      box.className='result show fail';
+      step1.appendChild(box);
+    }
+    box.className='result show fail';
+    box.innerHTML = `<div style="font-weight:700;color:var(--coral-deep);">⚠️ 結構不穩，塔身歪掉了！你選的順序與填入的數字組合，畫出來的圖形跟目標對不上。再檢查一次順序和數字之間的關係（可以點上面的提示），或按「重來」清空重試。</div>`;
+  }
 
   el('confirm2').addEventListener('click', ()=>{
-    const h = parseMathInput(inputH.value);
-    const d = parseMathInput(inputD.value);
-    if(!isFinite(h) || !isFinite(d)){
-      flashInvalid([inputH,inputD]);
-      return;
-    }
-    confirmed.h=h; confirmed.d=d;
-    step2Done=true;
-    inputH.disabled=true; inputD.disabled=true;
-    el('confirm2').disabled=true; el('reset2').disabled=true;
-    step2.classList.add('done');
-    const summary = document.createElement('div');
-    summary.className='confirmed-summary';
-    summary.textContent = `✓ 已鎖定：h = ${formatPi(h)}，d = ${fmtNum(d)} → 塔身完成！`;
-    step2.appendChild(summary);
-    step3.classList.remove('locked');
-  });
-
-  el('confirm3').addEventListener('click', ()=>{
     const userMax = parseMathInput(inputMax.value);
     const userMin = parseMathInput(inputMin.value);
     const userPeriod = parseMathInput(inputPeriod.value);
@@ -518,11 +552,11 @@
     rows += rowLine('最小值', okMin, fmtNum(trueMin));
     rows += rowLine('週期', okPeriod, formatPi(truePeriod));
     if(allOk){
-      box.innerHTML = `<div style="font-size:16px;font-weight:700;color:var(--mint);margin-bottom:6px;">🏗️ 造塔成功！塔身完美對齊目標函數。</div>` + rows +
+      box.innerHTML = `<div style="font-size:16px;font-weight:700;color:var(--mint-deep);margin-bottom:6px;">🏗️ 造塔成功！全部過關。</div>` + rows +
         `<button class="next-btn" id="nextLevelBtn">下一關 →</button>`;
       el('nextLevelBtn').addEventListener('click', nextLevel);
     } else {
-      box.innerHTML = `<div style="font-size:16px;font-weight:700;color:var(--coral);margin-bottom:6px;">⚠️ 塔身還沒對齊，再檢查一下：</div>` + rows +
+      box.innerHTML = `<div style="font-size:16px;font-weight:700;color:var(--coral-deep);margin-bottom:6px;">⚠️ 還沒對齊，再檢查一下：</div>` + rows +
         `<div style="margin-top:8px;color:var(--ink-dim);font-size:13px;">可以按上方「重來」清空這三格重新填寫。</div>`;
     }
   });
@@ -530,12 +564,8 @@
   function rowLine(label, ok, correctVal){
     return `<div class="check-row"><span class="status ${ok?'ok':'bad'}">${ok?'✓':'✗'}</span> ${label}：${ok? '正確' : ('答案是 '+correctVal)}</div>`;
   }
-
   function flashInvalid(inputs){
-    inputs.forEach(i=>{
-      i.style.borderColor = 'var(--coral)';
-      setTimeout(()=>{ i.style.borderColor=''; }, 700);
-    });
+    inputs.forEach(i=>{ i.style.borderColor = 'var(--coral)'; setTimeout(()=>{ i.style.borderColor=''; }, 700); });
   }
 
   function setTargetDisplay(){
@@ -545,16 +575,19 @@
   }
 
   function resetLevelUI(){
-    confirmed = {a:1,b:1,h:0,d:0};
-    live = {a:1,b:1,h:0,d:0};
-    step1Done=false; step2Done=false;
+    currentOrder='scaleFirst';
+    liveA=1; liveB=1; liveH=0; liveD=0;
+    step1Done=false;
     [inputA,inputB,inputH,inputD,inputMax,inputMin,inputPeriod].forEach(i=>{ i.value=''; i.disabled=false; });
     el('confirm1').disabled=false; el('reset1').disabled=false;
-    el('confirm2').disabled=false; el('reset2').disabled=false;
-    step1.classList.remove('done'); step2.classList.remove('done');
-    step2.classList.add('locked'); step3.classList.add('locked');
+    el('optScaleFirst').style.pointerEvents=''; el('optShiftFirst').style.pointerEvents='';
+    setOrder('scaleFirst');
+    step1.classList.remove('done');
+    step2.classList.add('locked');
+    const fb = document.getElementById('step1FailBox'); if(fb) fb.remove();
     document.querySelectorAll('.confirmed-summary').forEach(n=>n.remove());
     el('resultBox').className='result'; el('resultBox').innerHTML='';
+    el('hintBox').classList.remove('show');
     redrawYou();
   }
 
