@@ -37,7 +37,7 @@
     font-family:'Noto Sans TC', system-ui, sans-serif;
     padding:24px 16px 60px;
   }
-  .wrap{max-width:940px;margin:0 auto;}
+  .wrap{max-width:980px;margin:0 auto;}
   header{margin-bottom:18px;}
   .eyebrow{
     font-family:'JetBrains Mono',monospace;
@@ -54,7 +54,7 @@
     font-size:13px;background:var(--mint);color:#023d2c;
     padding:4px 12px;border-radius:999px;font-weight:700;
   }
-  .sub{color:var(--ink-dim);font-size:14.5px;line-height:1.7;max-width:680px;}
+  .sub{color:var(--ink-dim);font-size:14.5px;line-height:1.7;max-width:700px;}
 
   .target-card{
     margin-top:16px;background:var(--card);
@@ -127,25 +127,54 @@
   .step-note{font-size:13px;color:var(--ink-dim);margin-bottom:14px;line-height:1.7;}
   .step-note b{color:var(--ink);}
 
-  .order-picker{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
-  .order-opt{
-    flex:1 1 220px;border:2px solid var(--line);border-radius:12px;padding:12px 14px;
-    cursor:pointer;font-size:13.5px;background:#fbfbff;transition:all .15s ease;
+  .hint-toggle{
+    font-size:12.5px;color:var(--violet-deep);background:none;border:none;cursor:pointer;
+    text-decoration:underline;padding:0;margin-bottom:14px;font-weight:700;font-family:'Noto Sans TC',sans-serif;
   }
-  .order-opt b{display:block;font-size:14.5px;margin-bottom:3px;font-family:'Space Grotesk',sans-serif;}
-  .order-opt.selected{border-color:var(--violet);background:#f1f2fe;box-shadow:0 0 0 3px rgba(91,110,225,.15);}
-  .order-opt:hover{border-color:var(--violet);}
+  .hint-box{
+    display:none;background:#f1f2fe;border:1px solid #dfe1fa;border-radius:10px;
+    padding:12px 14px;font-size:12.5px;color:var(--ink-dim);line-height:1.8;margin-bottom:14px;
+  }
+  .hint-box.show{display:block;}
+  .hint-box code{background:#e4e6fb;padding:1px 5px;border-radius:5px;color:var(--violet-deep);}
 
-  .field-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px;}
-  .field{display:flex;flex-direction:column;gap:6px;min-width:150px;}
-  .field label{font-size:12.5px;color:var(--ink-dim);font-weight:700;}
+  .order-picker{display:flex;gap:14px;margin-bottom:16px;flex-wrap:wrap;align-items:flex-start;}
+  .order-opt{
+    flex:1 1 340px;border:2px solid var(--line);border-radius:14px;padding:14px 16px 16px;
+    cursor:pointer;background:#fbfbff;transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .order-opt .opt-head{font-size:13.5px;}
+  .order-opt b{display:block;font-size:15px;margin-bottom:3px;font-family:'Space Grotesk',sans-serif;}
+  .order-opt .opt-head{color:var(--ink-dim);}
+  .order-opt.selected{border-color:var(--violet);background:#f1f2fe;box-shadow:0 0 0 3px rgba(91,110,225,.15);cursor:default;}
+  .order-opt:not(.selected):hover{border-color:var(--violet);}
+
+  .order-fields{display:none;margin-top:14px;}
+  .order-opt.selected .order-fields{display:block;}
+
+  .field-group{margin-bottom:10px;}
+  .group-label{
+    display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:var(--ink);
+    margin-bottom:8px;
+  }
+  .badge{
+    width:20px;height:20px;border-radius:50%;background:var(--violet);color:#fff;
+    display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-family:'JetBrains Mono',monospace;
+  }
+  .group-arrow{text-align:center;color:#b6bae0;font-size:16px;margin:2px 0 8px;}
+
+  .field-row{display:flex;gap:10px;flex-wrap:wrap;}
+  .field{display:flex;flex-direction:column;gap:6px;min-width:130px;flex:1;}
+  .field label{font-size:12px;color:var(--ink-dim);font-weight:700;}
   .field input{
-    background:#fbfbff;border:2px solid var(--line);color:var(--ink);
-    padding:9px 10px;border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:15px;
-    width:150px;
+    background:#fff;border:2px solid var(--line);color:var(--ink);
+    padding:8px 10px;border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:14.5px;
+    width:100%;
   }
   .field input:focus{outline:none;border-color:var(--violet);}
-  .field .hint{font-size:11px;color:#9296b5;}
+  .field input:disabled{background:#f4f4fa;color:#a7abc6;}
+  .field .hint{font-size:10.5px;color:#9296b5;}
+
   .btn-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
   button.action{
     font-family:'Noto Sans TC',sans-serif;font-weight:700;font-size:14px;
@@ -156,18 +185,7 @@
   .btn-confirm{background:var(--yellow);color:#5a3b00;}
   .btn-confirm:hover{background:var(--yellow-deep);color:#3d2700;}
   .btn-confirm:disabled{background:#eee;color:#aaa;cursor:not-allowed;}
-  .confirmed-summary{font-family:'JetBrains Mono',monospace;font-size:13.5px;color:var(--mint-deep);margin-top:10px;font-weight:700;}
-
-  .hint-toggle{
-    font-size:12.5px;color:var(--violet-deep);background:none;border:none;cursor:pointer;
-    text-decoration:underline;padding:0;margin-bottom:10px;font-weight:700;font-family:'Noto Sans TC',sans-serif;
-  }
-  .hint-box{
-    display:none;background:#f1f2fe;border:1px solid #dfe1fa;border-radius:10px;
-    padding:12px 14px;font-size:12.5px;color:var(--ink-dim);line-height:1.8;margin-bottom:14px;
-  }
-  .hint-box.show{display:block;}
-  .hint-box code{background:#e4e6fb;padding:1px 5px;border-radius:5px;color:var(--violet-deep);}
+  .confirmed-summary{font-family:'JetBrains Mono',monospace;font-size:13.5px;color:var(--mint-deep);margin-top:6px;font-weight:700;}
 
   .check-row{display:flex;align-items:center;gap:10px;}
   .check-row .status{font-size:16px;width:20px;text-align:center;}
@@ -175,7 +193,7 @@
   .bad{color:var(--coral-deep);}
 
   .result{
-    margin-top:10px;padding:14px 16px;border-radius:12px;font-size:14px;line-height:1.8;display:none;
+    margin-top:14px;padding:14px 16px;border-radius:12px;font-size:14px;line-height:1.8;display:none;
   }
   .result.show{display:block;}
   .result.pass{background:#e9fbf5;border:2px solid var(--mint);}
@@ -192,7 +210,7 @@
   <header>
     <div class="eyebrow">STACKING UP · 波浪造塔工程</div>
     <h1>正弦函數造塔工程 <span class="lv" id="levelTag">LEVEL 1</span></h1>
-    <div class="sub">目標函數已經給定。這次你要自己決定「先伸縮再平移」還是「先平移再伸縮」，並填入對應的數字——同一個目標函數，兩種順序需要的數字不一定相同，選錯順序又套錯數字，塔就蓋歪了！</div>
+    <div class="sub">目標函數已經給定。這次你要自己決定「先伸縮再平移」還是「先平移再伸縮」，並依照邏輯順序填入對應的數字——同一個目標函數，兩種順序需要的數字不一定相同，選錯順序又套錯數字，塔就蓋歪了！</div>
   </header>
 
   <div class="target-card">
@@ -213,12 +231,12 @@
   </div>
 
   <div class="steps">
-    <!-- STEP 1: 建構函數（伸縮 + 平移 一起做，順序自選） -->
+    <!-- STEP 1: 建構函數（伸縮 + 平移，順序自選，各自 4 格） -->
     <div class="step" id="step1">
       <div class="step-head">
-        <div class="step-title"><span class="tag">STEP 1</span> 造塔工程：選順序、填數字</div>
+        <div class="step-title"><span class="tag">STEP 1</span> 造塔工程：選順序、依序填數字</div>
       </div>
-      <div class="step-note">先選一種操作順序，再填入<b>振幅 a</b>、<b>水平伸縮 b</b>、<b>水平平移 h</b>、<b>垂直平移 d</b>。輸入的同時右邊粉紅色曲線會即時預覽，最後按「確認」看看是否精準疊上目標圖形（紫色虛線）。</div>
+      <div class="step-note">先點選一種操作順序，該卡片下方會依邏輯順序展開對應的輸入格。輸入的同時右邊粉紅色曲線會即時預覽，最後按「確認」看看是否精準疊上目標圖形（紫色虛線）。</div>
 
       <button class="hint-toggle" id="hintToggle">💡 兩種順序的數字關係，我還是不懂……</button>
       <div class="hint-box" id="hintBox">
@@ -228,35 +246,51 @@
       </div>
 
       <div class="order-picker">
+        <!-- 選項一：先伸縮，再平移 -->
         <div class="order-opt selected" data-order="scaleFirst" id="optScaleFirst">
-          <b>🔧 先伸縮，再平移</b>
-          y = sin x → 拉伸/壓縮 → 再整體平移
+          <div class="opt-head"><b>🔧 先伸縮，再平移</b>y = sin x → 拉伸/壓縮 → 再整體平移</div>
+          <div class="order-fields">
+            <div class="field-group">
+              <div class="group-label"><span class="badge">①</span> 伸縮</div>
+              <div class="field-row">
+                <div class="field"><label>振幅倍數 a</label><input type="text" id="inputA1" placeholder="例如 3"></div>
+                <div class="field"><label>水平伸縮倍數 b</label><input type="text" id="inputB1" placeholder="例如 1"></div>
+              </div>
+            </div>
+            <div class="group-arrow">↓</div>
+            <div class="field-group">
+              <div class="group-label"><span class="badge">②</span> 平移</div>
+              <div class="field-row">
+                <div class="field"><label>水平平移 h</label><input type="text" id="inputH1" placeholder="pi/3 或 0"><span class="hint">可直接打 pi</span></div>
+                <div class="field"><label>垂直平移 d</label><input type="text" id="inputD1" placeholder="例如 1"></div>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <!-- 選項二：先平移，再伸縮 -->
         <div class="order-opt" data-order="shiftFirst" id="optShiftFirst">
-          <b>🔀 先平移，再伸縮</b>
-          y = sin x → 先整體平移 → 再拉伸/壓縮
+          <div class="opt-head"><b>🔀 先平移，再伸縮</b>y = sin x → 先整體平移 → 再拉伸/壓縮</div>
+          <div class="order-fields">
+            <div class="field-group">
+              <div class="group-label"><span class="badge">①</span> 平移</div>
+              <div class="field-row">
+                <div class="field"><label>水平平移 h</label><input type="text" id="inputH2" placeholder="pi/3 或 0"><span class="hint">可直接打 pi</span></div>
+                <div class="field"><label>垂直平移 d</label><input type="text" id="inputD2" placeholder="例如 1"></div>
+              </div>
+            </div>
+            <div class="group-arrow">↓</div>
+            <div class="field-group">
+              <div class="group-label"><span class="badge">②</span> 伸縮</div>
+              <div class="field-row">
+                <div class="field"><label>振幅倍數 a</label><input type="text" id="inputA2" placeholder="例如 3"></div>
+                <div class="field"><label>水平伸縮倍數 b</label><input type="text" id="inputB2" placeholder="例如 1"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="field-row">
-        <div class="field">
-          <label>振幅倍數 a</label>
-          <input type="text" id="inputA" placeholder="例如 3">
-        </div>
-        <div class="field">
-          <label>水平伸縮倍數 b</label>
-          <input type="text" id="inputB" placeholder="例如 1">
-        </div>
-        <div class="field">
-          <label>水平平移 h</label>
-          <input type="text" id="inputH" placeholder="例如 pi/3 或 0">
-          <span class="hint">可直接打 pi，例如 pi/3</span>
-        </div>
-        <div class="field">
-          <label>垂直平移 d</label>
-          <input type="text" id="inputD" placeholder="例如 1">
-        </div>
-      </div>
       <div class="btn-row">
         <button class="action btn-reset" id="reset1">重來</button>
         <button class="action btn-confirm" id="confirm1">確認</button>
@@ -292,7 +326,7 @@
   </div>
 
   <footer>
-    📐 小提醒：課本教的「先伸縮、再平移」是最直覺、可以直接套公式 y = a·sin(b(x−h)) + d 的順序。「先平移再伸縮」不是不能用，只是平移量會被後面的伸縮再放大一次，所以填入的數字要相應調整——這正是這一關要練習的重點。
+    📐 小提醒：課本教的「先伸縮、再平移」是最直覺、可以直接套公式 y = a·sin(b(x−h)) + d 的順序。「先平移再伸縮」不是不能用，只是平移量會被後面的伸縮再放大一次，所以填入的數字要相應調整——這正是這一關要練習的重點。STEP 1 答對之後仍然可以按「重來」，換另一種順序再挑戰一次。
   </footer>
 </div>
 
@@ -438,30 +472,41 @@
     document.getElementById('curveTarget').setAttribute('d', buildPathD(targetFn(target)));
   }
   function redrawYou(){
-    const fn = currentOrder==='scaleFirst' ? scaleFirstFn(liveA,liveB,liveH,liveD) : shiftFirstFn(liveA,liveB,liveH,liveD);
+    const v = getActiveValues();
+    const fn = currentOrder==='scaleFirst' ? scaleFirstFn(v.a,v.b,v.h,v.d) : shiftFirstFn(v.a,v.b,v.h,v.d);
     document.getElementById('curveYou').setAttribute('d', buildPathD(fn));
   }
 
   // ---------- state ----------
   const el = id => document.getElementById(id);
   const step1 = el('step1'), step2 = el('step2');
-  const inputA = el('inputA'), inputB = el('inputB'), inputH = el('inputH'), inputD = el('inputD');
   const inputMax = el('inputMax'), inputMin = el('inputMin'), inputPeriod = el('inputPeriod');
+
+  // two independent field sets, 8 boxes total
+  const scaleFields = { a: el('inputA1'), b: el('inputB1'), h: el('inputH1'), d: el('inputD1') };
+  const shiftFields = { h: el('inputH2'), d: el('inputD2'), a: el('inputA2'), b: el('inputB2') };
+  const allFields = [scaleFields.a, scaleFields.b, scaleFields.h, scaleFields.d,
+                      shiftFields.h, shiftFields.d, shiftFields.a, shiftFields.b];
+
   let currentOrder = 'scaleFirst';
-  let liveA=1, liveB=1, liveH=0, liveD=0;
-  let step1Done=false;
+  let step1Done = false;
 
-  function readInputs(){
-    const a = parseMathInput(inputA.value); liveA = isFinite(a)?a:1;
-    const b = parseMathInput(inputB.value); liveB = (isFinite(b)&&b!==0)?b:1;
-    const h = parseMathInput(inputH.value); liveH = isFinite(h)?h:0;
-    const d = parseMathInput(inputD.value); liveD = isFinite(d)?d:0;
-    redrawYou();
+  function getActiveValues(){
+    const f = currentOrder==='scaleFirst' ? scaleFields : shiftFields;
+    const a = parseMathInput(f.a.value), b = parseMathInput(f.b.value);
+    const h = parseMathInput(f.h.value), d = parseMathInput(f.d.value);
+    return {
+      a: isFinite(a) ? a : 1,
+      b: (isFinite(b) && b!==0) ? b : 1,
+      h: isFinite(h) ? h : 0,
+      d: isFinite(d) ? d : 0,
+    };
   }
-  [inputA,inputB,inputH,inputD].forEach(i=> i.addEventListener('input', ()=>{ if(!step1Done) readInputs(); }));
 
-  el('optScaleFirst').addEventListener('click', ()=>{ if(step1Done) return; setOrder('scaleFirst'); });
-  el('optShiftFirst').addEventListener('click', ()=>{ if(step1Done) return; setOrder('shiftFirst'); });
+  allFields.forEach(inp => inp.addEventListener('input', ()=>{ if(!step1Done) redrawYou(); }));
+
+  el('optScaleFirst').addEventListener('click', ()=>{ if(!step1Done) setOrder('scaleFirst'); });
+  el('optShiftFirst').addEventListener('click', ()=>{ if(!step1Done) setOrder('shiftFirst'); });
   function setOrder(order){
     currentOrder = order;
     el('optScaleFirst').classList.toggle('selected', order==='scaleFirst');
@@ -474,24 +519,30 @@
   });
 
   el('reset1').addEventListener('click', ()=>{
-    inputA.value=''; inputB.value=''; inputH.value=''; inputD.value='';
-    liveA=1; liveB=1; liveH=0; liveD=0;
-    redrawYou();
+    allFields.forEach(inp=>{ inp.value=''; inp.disabled=false; });
+    el('confirm1').disabled=false;
+    el('optScaleFirst').style.cursor=''; el('optShiftFirst').style.cursor='';
+    step1Done = false;
+    step1.classList.remove('done');
+    const summary = step1.querySelector('.confirmed-summary'); if(summary) summary.remove();
+    const fb = document.getElementById('step1FailBox'); if(fb) fb.remove();
+    step2.classList.add('locked');
+    setOrder(currentOrder);
   });
+
   el('reset2').addEventListener('click', ()=>{
     inputMax.value=''; inputMin.value=''; inputPeriod.value='';
     el('resultBox').className='result'; el('resultBox').innerHTML='';
   });
 
   el('confirm1').addEventListener('click', ()=>{
-    const a=parseMathInput(inputA.value), b=parseMathInput(inputB.value);
-    const h=parseMathInput(inputH.value), d=parseMathInput(inputD.value);
+    const f = currentOrder==='scaleFirst' ? scaleFields : shiftFields;
+    const a=parseMathInput(f.a.value), b=parseMathInput(f.b.value);
+    const h=parseMathInput(f.h.value), d=parseMathInput(f.d.value);
     if(!isFinite(a)||!isFinite(b)||b===0||!isFinite(h)||!isFinite(d)){
-      flashInvalid([inputA,inputB,inputH,inputD]);
+      flashInvalid([f.a,f.b,f.h,f.d]);
       return;
     }
-    liveA=a; liveB=b; liveH=h; liveD=d;
-    redrawYou();
 
     const userFn = currentOrder==='scaleFirst' ? scaleFirstFn(a,b,h,d) : shiftFirstFn(a,b,h,d);
     const tFn = targetFn(target);
@@ -504,9 +555,9 @@
 
     if(matched){
       step1Done = true;
-      [inputA,inputB,inputH,inputD].forEach(i=>i.disabled=true);
-      el('confirm1').disabled=true; el('reset1').disabled=true;
-      el('optScaleFirst').style.pointerEvents='none'; el('optShiftFirst').style.pointerEvents='none';
+      allFields.forEach(inp=>inp.disabled=true);
+      el('confirm1').disabled=true;
+      const fb = document.getElementById('step1FailBox'); if(fb) fb.remove();
       step1.classList.add('done');
       const summary = document.createElement('div');
       summary.className='confirmed-summary';
@@ -575,20 +626,17 @@
   }
 
   function resetLevelUI(){
-    currentOrder='scaleFirst';
-    liveA=1; liveB=1; liveH=0; liveD=0;
-    step1Done=false;
-    [inputA,inputB,inputH,inputD,inputMax,inputMin,inputPeriod].forEach(i=>{ i.value=''; i.disabled=false; });
-    el('confirm1').disabled=false; el('reset1').disabled=false;
-    el('optScaleFirst').style.pointerEvents=''; el('optShiftFirst').style.pointerEvents='';
-    setOrder('scaleFirst');
+    allFields.forEach(inp=>{ inp.value=''; inp.disabled=false; });
+    inputMax.value=''; inputMin.value=''; inputPeriod.value='';
+    step1Done = false;
+    el('confirm1').disabled=false;
     step1.classList.remove('done');
     step2.classList.add('locked');
+    const summary = step1.querySelector('.confirmed-summary'); if(summary) summary.remove();
     const fb = document.getElementById('step1FailBox'); if(fb) fb.remove();
-    document.querySelectorAll('.confirmed-summary').forEach(n=>n.remove());
     el('resultBox').className='result'; el('resultBox').innerHTML='';
     el('hintBox').classList.remove('show');
-    redrawYou();
+    setOrder('scaleFirst');
   }
 
   function nextLevel(){
