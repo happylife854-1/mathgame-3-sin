@@ -3,22 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>波浪造塔工程 - 進階輸入版</title>
+    <title>波浪造塔工程 - 視覺圖形對齊版</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
-        .header { text-align: center; margin-bottom: 20px; }
-        h1 { color: #2c3e50; margin: 0 0 10px 0; }
+        .header { text-align: center; margin-bottom: 10px; }
+        h1 { color: #2c3e50; margin: 0 0 5px 0; }
         
-        .game-panel { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 650px; text-align: center; }
+        .game-panel { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 700px; text-align: center; }
         
-        .level-badge { background: #f39c12; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; display: inline-block; margin-bottom: 15px; }
-        .target-box { font-size: 22px; color: #c0392b; font-weight: bold; padding: 15px; background: #fdedec; border: 2px dashed #e74c3c; border-radius: 10px; margin-bottom: 20px; }
-        .current-box { font-size: 26px; color: #2980b9; font-weight: bold; margin: 20px 0; min-height: 40px; padding: 10px; background: #eaf2f8; border-radius: 10px; transition: 0.3s; }
+        .level-badge { background: #f39c12; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; display: inline-block; margin-bottom: 10px; }
+        .target-box { font-size: 20px; color: #c0392b; font-weight: bold; padding: 10px; background: #fdedec; border: 2px dashed #e74c3c; border-radius: 10px; margin-bottom: 10px; }
+        .current-box { font-size: 24px; color: #2980b9; font-weight: bold; margin: 10px 0; min-height: 35px; padding: 10px; background: #eaf2f8; border-radius: 10px; transition: 0.3s; }
         
-        .controls-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 20px; text-align: left; }
-        .control-item { display: flex; gap: 10px; align-items: center; background: #f9f9f9; padding: 10px; border-radius: 8px; border: 1px solid #eee; }
-        .control-item input { flex: 1; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; }
-        .control-item button { padding: 10px 15px; font-size: 15px; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; color: white; transition: 0.1s; white-space: nowrap; }
+        /* 畫布與圖例區塊 */
+        .canvas-container { position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; }
+        canvas { background-color: #fdfefe; border: 2px solid #bdc3c7; border-radius: 10px; width: 100%; max-width: 600px; height: auto; }
+        .legend { display: flex; gap: 20px; margin-top: 10px; font-size: 14px; font-weight: bold; }
+        .legend-target { color: #e74c3c; }
+        .legend-current { color: #2980b9; }
+
+        .controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; text-align: left; }
+        .control-item { display: flex; flex-direction: column; gap: 5px; background: #f9f9f9; padding: 10px; border-radius: 8px; border: 1px solid #eee; }
+        .control-item input { width: 100%; padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        .control-item button { width: 100%; padding: 10px; font-size: 14px; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; color: white; transition: 0.1s; }
         
         .btn-amp { background-color: #3498db; box-shadow: 0 3px 0 #2980b9; }
         .btn-period { background-color: #e67e22; box-shadow: 0 3px 0 #d35400; }
@@ -28,26 +35,29 @@
         button:active { transform: translateY(2px); box-shadow: none !important; }
         button:disabled { background-color: #bdc3c7 !important; box-shadow: 0 3px 0 #95a5a6 !important; cursor: not-allowed; transform: none; }
         
-        .btn-reset { background-color: #7f8c8d; width: 100%; padding: 12px; font-size: 16px; font-weight: bold; color: white; border: none; border-radius: 8px; box-shadow: 0 4px 0 #707b7c; margin-bottom: 10px; cursor: pointer; }
-        .btn-reset:active { transform: translateY(2px); box-shadow: none; }
-
-        #statusMessage { font-size: 18px; font-weight: bold; margin: 15px 0; min-height: 25px; color: #34495e; }
+        .btn-reset { background-color: #7f8c8d; width: 100%; padding: 12px; font-size: 16px; font-weight: bold; color: white; border: none; border-radius: 8px; box-shadow: 0 4px 0 #707b7c; margin-bottom: 5px; cursor: pointer; }
+        
+        #statusMessage { font-size: 16px; font-weight: bold; margin: 10px 0; min-height: 20px; color: #34495e; }
         
         /* 分項驗收區塊 */
-        .verify-panel { display: none; background: #fff3e0; padding: 20px; border-radius: 10px; border: 2px solid #ffb300; margin-top: 20px; text-align: left; }
-        .verify-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed #f3c27b; }
+        .verify-panel { display: none; background: #fff3e0; padding: 15px; border-radius: 10px; border: 2px solid #ffb300; margin-top: 15px; text-align: left; }
+        .verify-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dashed #f3c27b; }
         .verify-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-        .verify-row label { font-weight: bold; color: #d35400; width: 60px; font-size: 18px; }
-        .verify-row input { flex: 1; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; margin: 0 10px; }
-        .verify-row button { background-color: #e74c3c; box-shadow: 0 3px 0 #c0392b; padding: 8px 15px; }
-        .status-icon { width: 80px; text-align: right; font-size: 16px; font-weight: bold; }
+        .verify-row label { font-weight: bold; color: #d35400; width: 60px; font-size: 16px; }
+        .verify-row input { flex: 1; padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; margin: 0 10px; }
+        .verify-row button { background-color: #e74c3c; box-shadow: 0 3px 0 #c0392b; padding: 8px 15px; font-size: 14px;}
+        .status-icon { width: 70px; text-align: right; font-size: 15px; font-weight: bold; }
+
+        @media (max-width: 600px) {
+            .controls-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>🏗️ 波浪造塔工程：參數輸入版</h1>
-        <p style="color: #7f8c8d;">自行輸入變換數值，可輸入 <strong>pi</strong> 代表 <strong>π</strong></p>
+        <h1>🏗️ 波浪造塔：視覺對齊版</h1>
+        <p style="color: #7f8c8d; margin: 5px 0;">推動藍線與紅線重疊！支援輸入 <strong>pi</strong> 代表 <strong>π</strong></p>
     </div>
 
     <div class="game-panel" id="gamePanel">
@@ -55,27 +65,34 @@
         
         <div class="target-box" id="targetDisplay">目標藍圖： y = 3sin(x) - 2</div>
         
-        <div style="color: #7f8c8d; font-size: 14px;">目前地基狀態：</div>
+        <div class="canvas-container">
+            <!-- 即時繪圖畫布 -->
+            <canvas id="graphCanvas" width="600" height="260"></canvas>
+            <div class="legend">
+                <span class="legend-target">🔴 虛線：目標藍圖</span>
+                <span class="legend-current">🔵 實線：目前地基</span>
+            </div>
+        </div>
+        
         <div class="current-box" id="currentDisplay">y = sin(x)</div>
-
-        <div id="statusMessage">請輸入數值並套用方塊...</div>
+        <div id="statusMessage">請輸入數值並套用變換...</div>
 
         <!-- 自訂輸入變換區 -->
         <div class="controls-grid">
             <div class="control-item">
-                <input type="text" id="inAmp" placeholder="輸入振幅倍數 (例: 3)">
-                <button id="btnAmp" class="btn-amp" onclick="applyTransform('amp')">套用振幅</button>
+                <input type="text" id="inAmp" placeholder="振幅倍數 (例: 3)">
+                <button id="btnAmp" class="btn-amp" onclick="applyTransform('amp')">套用振幅 (上下拉伸)</button>
             </div>
             <div class="control-item">
-                <input type="text" id="inPeriod" placeholder="輸入 x 係數 (例: 2)">
-                <button id="btnPeriod" class="btn-period" onclick="applyTransform('period')">套用伸縮</button>
+                <input type="text" id="inPeriod" placeholder="x 係數 (例: 2)">
+                <button id="btnPeriod" class="btn-period" onclick="applyTransform('period')">套用週期 (左右壓縮)</button>
             </div>
             <div class="control-item">
-                <input type="text" id="inHShift" placeholder="輸入左右平移 (例: +pi/4)">
+                <input type="text" id="inHShift" placeholder="左右平移 (例: -pi/4)">
                 <button id="btnHShift" class="btn-hshift" onclick="applyTransform('hshift')">左右平移</button>
             </div>
             <div class="control-item">
-                <input type="text" id="inVShift" placeholder="輸入上下平移 (例: -2)">
+                <input type="text" id="inVShift" placeholder="上下平移 (例: -2)">
                 <button id="btnVShift" class="btn-vshift" onclick="applyTransform('vshift')">上下平移</button>
             </div>
         </div>
@@ -85,21 +102,18 @@
         <!-- 獨立工程驗收區 -->
         <div class="verify-panel" id="verifyPanel">
             <h3 style="color: #d35400; margin-top: 0; text-align: center;">✅ 結構驗收 (分項確認)</h3>
-            
             <div class="verify-row">
                 <label>週期</label>
                 <input type="text" id="ansPeriod" placeholder="例: 2pi">
                 <button onclick="checkItem('Period')">確認</button>
                 <div class="status-icon" id="statusPeriod"></div>
             </div>
-            
             <div class="verify-row">
                 <label>最大值</label>
                 <input type="text" id="ansMax" placeholder="例: 1">
                 <button onclick="checkItem('Max')">確認</button>
                 <div class="status-icon" id="statusMax"></div>
             </div>
-
             <div class="verify-row">
                 <label>最小值</label>
                 <input type="text" id="ansMin" placeholder="例: -5">
@@ -110,34 +124,38 @@
     </div>
 
 <script>
-    // 關卡資料庫 (答案皆以 π 儲存，系統會自動轉換使用者的 pi)
+    // 關卡資料庫
+    // targetFunc 是用來繪製紅色虛線的實際數學函式
     const levels = [
         {
             title: "第一關：振幅與上下平移",
-            target: "3sin(x)-2",
+            targetStr: "3sin(x)-2",
+            targetFunc: (x) => 3 * Math.sin(x) - 2,
             ans: { Period: "2π", Max: "1", Min: "-5" },
-            requiredBlocks: 2 // 這關需要按幾次按鈕才檢查
+            requiredBlocks: 2
         },
         {
             title: "第二關：週期與左右平移 (注意分配律陷阱)",
-            target: "sin(2(x+π/4))",
+            targetStr: "sin(2(x+π/4))",
+            targetFunc: (x) => Math.sin(2 * (x + Math.PI/4)),
             ans: { Period: "π", Max: "1", Min: "-1" },
             requiredBlocks: 2
         },
         {
             title: "第三關：綜合大挑戰",
-            target: "2sin(1/2(x-π))+1",
+            targetStr: "2sin(1/2(x-π))+1",
+            targetFunc: (x) => 2 * Math.sin(0.5 * (x - Math.PI)) + 1,
             ans: { Period: "4π", Max: "3", Min: "-1" },
             requiredBlocks: 4
         }
     ];
 
     let currentLevel = 0;
-    let currentExpression = "sin(x)";
+    let currentExpressionStr = "sin(x)";
+    let currentMathFunc = (x) => Math.sin(x); // 即時繪圖用的函式
+    
     let isLevelComplete = false;
     let blocksUsed = 0;
-    
-    // 追蹤三個答案是否都正確
     let verifyStatus = { Period: false, Max: false, Min: false };
 
     // 初始化關卡
@@ -145,19 +163,19 @@
         const levelData = levels[currentLevel];
         document.getElementById('levelDisplay').innerText = levelData.title;
         
-        // 為了讓畫面好看，把目標字串稍微加點空格顯示
-        let displayTarget = levelData.target.replace(/sin/g, 'sin ').replace(/\+/g, ' + ').replace(/\-/g, ' - ');
-        // 修復首字負號或括號內的空格
+        // 處理顯示字串的排版
+        let displayTarget = levelData.targetStr.replace(/sin/g, 'sin ').replace(/\+/g, ' + ').replace(/\-/g, ' - ');
         displayTarget = displayTarget.replace(/\( \+ /g, '(+').replace(/\( \- /g, '(-');
         document.getElementById('targetDisplay').innerText = `目標藍圖： y = ${displayTarget}`;
         
-        currentExpression = "sin(x)";
+        currentExpressionStr = "sin(x)";
+        currentMathFunc = (x) => Math.sin(x); // 重置為基本 sin(x)
         blocksUsed = 0;
         isLevelComplete = false;
         verifyStatus = { Period: false, Max: false, Min: false };
         updateDisplay();
         
-        // 重置所有輸入框與按鈕
+        // 重置 UI
         const types = ['Amp', 'Period', 'HShift', 'VShift'];
         types.forEach(t => {
             document.getElementById('in' + t).value = "";
@@ -167,19 +185,28 @@
         });
         
         document.getElementById('verifyPanel').style.display = "none";
-        document.getElementById('statusMessage').innerText = "請輸入數值並套用方塊...";
+        document.getElementById('statusMessage').innerText = "請輸入數值並套用變換...";
         document.getElementById('statusMessage').style.color = "#34495e";
+        
+        drawGraph(); // 繪製初始圖形
     }
 
     function updateDisplay() {
-        // 為了顯示美觀，處理空格
-        let prettyExpr = currentExpression.replace(/\+/g, ' + ').replace(/\-/g, ' - ');
+        let prettyExpr = currentExpressionStr.replace(/\+/g, ' + ').replace(/\-/g, ' - ');
         prettyExpr = prettyExpr.replace(/\( \+ /g, '(+').replace(/\( \- /g, '(-');
         document.getElementById('currentDisplay').innerText = `y = ${prettyExpr}`;
     }
 
-    // 處理輸入字串：去空白並將 pi 轉成 π
-    function normalizeInput(val) {
+    // 將字串中的 pi 轉成數學運算用的值
+    function parseMathValue(str) {
+        let s = str.toLowerCase().replace(/pi/g, 'Math.PI').replace(/π/g, 'Math.PI').replace(/\s+/g, '');
+        // 簡易防呆，只允許數字和基本運算符號
+        if (!/^[0-9\.\+\-\*\/\(\)Math\.PI]+$/.test(s)) return NaN;
+        try { return eval(s); } catch (e) { return NaN; }
+    }
+
+    // 處理比對答案用的字串 (把 pi 轉成 π)
+    function normalizeAnsString(val) {
         return val.toLowerCase().replace(/pi/g, 'π').replace(/\s+/g, '');
     }
 
@@ -189,81 +216,143 @@
 
         let inputId = type === 'amp' ? 'inAmp' : type === 'period' ? 'inPeriod' : type === 'hshift' ? 'inHShift' : 'inVShift';
         let rawVal = document.getElementById(inputId).value;
-        if (rawVal.trim() === "") {
-            alert("請先輸入數值喔！");
-            return;
-        }
+        if (rawVal.trim() === "") return alert("請先輸入數值喔！");
 
-        let val = normalizeInput(rawVal);
+        let mathVal = parseMathValue(rawVal);
+        if (isNaN(mathVal)) return alert("輸入的格式無法辨識，請輸入數字或 pi (例如 2, -pi/2)");
+
+        let strVal = rawVal.toLowerCase().replace(/pi/g, 'π').replace(/\s+/g, '');
+        let oldFunc = currentMathFunc; // 記住目前的函數狀態
 
         if (type === "amp") {
-            // 偵測是否已經有上下平移 (分配律陷阱)
             let trap = false;
-            if (currentExpression.includes(')')) {
-                let afterSin = currentExpression.substring(currentExpression.lastIndexOf(')'));
+            if (currentExpressionStr.includes(')')) {
+                let afterSin = currentExpressionStr.substring(currentExpressionStr.lastIndexOf(')'));
                 if (afterSin.includes('+') || afterSin.includes('-')) trap = true;
             }
             
-            if (trap) {
-                currentExpression = `${val}(${currentExpression})`; 
-            } else {
-                currentExpression = `${val}${currentExpression}`;
-            }
+            if (trap) currentExpressionStr = `${strVal}(${currentExpressionStr})`; 
+            else currentExpressionStr = `${strVal}${currentExpressionStr}`;
+            
+            // 數學函數疊加：y = A * f(x)
+            currentMathFunc = (x) => mathVal * oldFunc(x);
         } 
         else if (type === "vshift") {
-            // 自動補齊正號如果學生只輸入數字
-            if(!val.startsWith('+') && !val.startsWith('-')) val = '+' + val;
-            currentExpression = `${currentExpression}${val}`;
+            if(!strVal.startsWith('+') && !strVal.startsWith('-')) strVal = '+' + strVal;
+            currentExpressionStr = `${currentExpressionStr}${strVal}`;
+            
+            // 數學函數疊加：y = f(x) + D
+            currentMathFunc = (x) => oldFunc(x) + mathVal;
         }
         else if (type === "period") {
-            // 取代 x 為 bx
-            currentExpression = currentExpression.replace(/x/g, `${val}x`);
+            currentExpressionStr = currentExpressionStr.replace(/x/g, `${strVal}x`);
+            
+            // 數學函數疊加：y = f(Bx)
+            currentMathFunc = (x) => oldFunc(mathVal * x);
         }
         else if (type === "hshift") {
-            // 取代 x 為 (x+h) 或 (x-h)
-            if(!val.startsWith('+') && !val.startsWith('-')) val = '+' + val;
-            currentExpression = currentExpression.replace(/x/g, `(x${val})`);
+            if(!strVal.startsWith('+') && !strVal.startsWith('-')) strVal = '+' + strVal;
+            currentExpressionStr = currentExpressionStr.replace(/x/g, `(x${strVal})`);
+            
+            // 數學函數疊加：y = f(x + C)
+            currentMathFunc = (x) => oldFunc(x + mathVal);
         }
 
-        // 停用該按鈕避免重複點擊
-        let btnId = type === 'amp' ? 'btnAmp' : type === 'period' ? 'btnPeriod' : type === 'hshift' ? 'btnHShift' : 'btnVShift';
-        document.getElementById(btnId).disabled = true;
+        document.getElementById(type === 'amp' ? 'btnAmp' : type === 'period' ? 'btnPeriod' : type === 'hshift' ? 'btnHShift' : 'btnVShift').disabled = true;
         
         blocksUsed++;
         updateDisplay();
+        drawGraph(); // 每次套用變換後重新繪圖
         checkStructure();
     }
 
-    // 檢查方程式是否與目標一致
+    // ==========================================
+    // 繪圖核心系統 Canvas Grapher
+    // ==========================================
+    function drawGraph() {
+        const canvas = document.getElementById('graphCanvas');
+        const ctx = canvas.getContext('2d');
+        const width = canvas.width;
+        const height = canvas.height;
+        
+        // 設定座標軸縮放比例
+        const scaleX = 40; // x軸 1 單位 = 40px
+        const scaleY = 30; // y軸 1 單位 = 30px
+        const centerX = width / 2;
+        const centerY = height / 2;
+
+        ctx.clearRect(0, 0, width, height);
+
+        // 1. 畫格線與座標軸
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = "#ecf0f1";
+        for (let i = 0; i <= width; i += scaleX) {
+            ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, height); ctx.stroke();
+        }
+        for (let i = 0; i <= height; i += scaleY) {
+            ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(width, i); ctx.stroke();
+        }
+
+        ctx.strokeStyle = "#95a5a6";
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(0, centerY); ctx.lineTo(width, centerY); ctx.stroke(); // X 軸
+        ctx.beginPath(); ctx.moveTo(centerX, 0); ctx.lineTo(centerX, height); ctx.stroke(); // Y 軸
+
+        // 2. 畫目標函數 (紅色虛線)
+        drawCurve(ctx, levels[currentLevel].targetFunc, "#e74c3c", [5, 5], 3, width, scaleX, scaleY, centerX, centerY);
+
+        // 3. 畫學生當前的函數 (藍色實線)
+        drawCurve(ctx, currentMathFunc, "#3498db", [], 3, width, scaleX, scaleY, centerX, centerY);
+    }
+
+    function drawCurve(ctx, mathFunction, color, dashArray, lineWidth, width, scaleX, scaleY, centerX, centerY) {
+        ctx.beginPath();
+        ctx.setLineDash(dashArray);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = lineWidth;
+
+        let isFirstPoint = true;
+        for (let px = 0; px <= width; px += 2) {
+            let mathX = (px - centerX) / scaleX; // 將螢幕 X 轉成 數學 X
+            let mathY = mathFunction(mathX);     // 計算 Y
+            let py = centerY - (mathY * scaleY); // 將數學 Y 轉成 螢幕 Y
+
+            if (isFirstPoint) {
+                ctx.moveTo(px, py);
+                isFirstPoint = false;
+            } else {
+                ctx.lineTo(px, py);
+            }
+        }
+        ctx.stroke();
+    }
+    // ==========================================
+
     function checkStructure() {
         const status = document.getElementById('statusMessage');
-        const target = levels[currentLevel].target;
+        const targetStr = levels[currentLevel].targetStr;
+        let cleanCurrent = currentExpressionStr.replace(/\s+/g, '');
         
-        // 消除內部所有空白進行嚴格比對
-        let cleanCurrent = currentExpression.replace(/\s+/g, '');
-        
-        // 如果使用的方塊數量達到關卡需求，就進行判定
         if (blocksUsed >= levels[currentLevel].requiredBlocks) {
-            if (cleanCurrent === target) {
-                status.innerHTML = "✨ 結構穩定！請進行最後的「分項數據驗收」！";
+            if (cleanCurrent === targetStr) {
+                status.innerHTML = "✨ 圖形完美重疊！請進行最後的「數據驗收」！";
                 status.style.color = "#27ae60";
                 document.getElementById('currentDisplay').style.color = "#27ae60";
                 document.getElementById('verifyPanel').style.display = "block";
-                isLevelComplete = true; // 鎖定上方變換區
+                isLevelComplete = true; 
             } else {
-                status.innerHTML = "💥 結構不符或產生分配律錯誤！塔倒塌了！";
+                status.innerHTML = "💥 圖形沒有重疊 (可能產生了分配律錯誤)！請拆除重建！";
                 status.style.color = "#c0392b";
                 document.getElementById('currentDisplay').style.color = "#c0392b";
             }
         }
     }
 
-    // 獨立分項驗證
     function checkItem(itemType) {
         let inputVal = document.getElementById('ans' + itemType).value;
         if(inputVal.trim() === "") return alert("請輸入數值");
 
-        let normInput = normalizeInput(inputVal);
+        let normInput = normalizeAnsString(inputVal);
         let correctAns = levels[currentLevel].ans[itemType];
 
         let statusDiv = document.getElementById('status' + itemType);
@@ -276,7 +365,6 @@
             verifyStatus[itemType] = false;
         }
 
-        // 檢查是否三個都正確
         if (verifyStatus.Period && verifyStatus.Max && verifyStatus.Min) {
             setTimeout(() => {
                 alert("🎉 驗收完美通過！準備進入下一關！");
@@ -284,7 +372,7 @@
                 if (currentLevel < levels.length) {
                     initLevel();
                 } else {
-                    document.getElementById('gamePanel').innerHTML = "<h2>🏆 恭喜你，成為三角造塔大師！<br><br>你已完全掌握變換規律！</h2>";
+                    document.getElementById('gamePanel').innerHTML = "<h2>🏆 恭喜你，成為三角造塔大師！<br><br>你已完全掌握函數的圖形變換！</h2>";
                 }
             }, 600);
         }
@@ -295,7 +383,6 @@
         initLevel();
     }
 
-    // 啟動第一關
     window.onload = initLevel;
 </script>
 
