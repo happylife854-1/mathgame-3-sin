@@ -35,10 +35,10 @@
       var(--bg);
     color:var(--ink);
     font-family:'Noto Sans TC', system-ui, sans-serif;
-    padding:24px 16px 60px;
+    padding:22px 16px 60px;
   }
-  .wrap{max-width:980px;margin:0 auto;}
-  header{margin-bottom:18px;}
+  .wrap{max-width:1180px;margin:0 auto;}
+  header{margin-bottom:14px;}
   .eyebrow{
     font-family:'JetBrains Mono',monospace;
     font-size:12px;letter-spacing:.18em;color:var(--violet-deep);
@@ -46,45 +46,62 @@
   }
   h1{
     font-family:'Space Grotesk',sans-serif;
-    font-size:28px;margin:0 0 8px;color:var(--ink);
-    display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+    font-size:26px;margin:0 0 8px;color:var(--ink);
   }
-  h1 .lv{
-    font-family:'JetBrains Mono',monospace;
-    font-size:13px;background:var(--mint);color:#023d2c;
-    padding:4px 12px;border-radius:999px;font-weight:700;
+  .sub{color:var(--ink-dim);font-size:14px;line-height:1.7;max-width:760px;}
+
+  .hud{
+    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+    margin-top:14px;
   }
-  .sub{color:var(--ink-dim);font-size:14.5px;line-height:1.7;max-width:700px;}
+  .progress-wrap{display:flex;align-items:center;gap:10px;flex:1;min-width:220px;}
+  .progress-tag{
+    font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--violet-deep);
+    background:#eef0ff;padding:6px 14px;border-radius:999px;white-space:nowrap;
+  }
+  .progress-bar{flex:1;height:8px;background:#eef0f8;border-radius:999px;overflow:hidden;max-width:260px;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--violet),var(--pink));border-radius:999px;transition:width .3s ease;}
+  .timer-badge{
+    font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#7a4b00;
+    background:var(--yellow);padding:7px 16px;border-radius:999px;display:flex;align-items:center;gap:6px;
+    white-space:nowrap;
+  }
+  .timer-badge.stopped{background:var(--mint);color:#023d2c;}
+
+  .layout{display:grid;grid-template-columns:380px 1fr;gap:20px;margin-top:16px;align-items:start;}
+  @media (max-width: 880px){ .layout{grid-template-columns:1fr;} .sticky-col{position:static !important;} }
+  .sticky-col{position:sticky;top:16px;display:flex;flex-direction:column;gap:16px;}
 
   .target-card{
-    margin-top:16px;background:var(--card);
+    background:var(--card);
     border:2px solid var(--line);border-left:8px solid var(--violet);
     border-radius:var(--radius);
-    padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+    padding:16px 18px;
     box-shadow:0 6px 18px rgba(91,110,225,.08);
   }
-  .target-card .lbl{font-size:12px;color:var(--ink-dim);letter-spacing:.06em;margin-bottom:4px;font-weight:700;}
+  .target-card .lbl{font-size:12px;color:var(--ink-dim);letter-spacing:.06em;margin-bottom:6px;font-weight:700;}
   .target-fn{
-    font-family:'JetBrains Mono',monospace;font-size:23px;font-weight:700;color:var(--violet-deep);
+    font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:var(--violet-deep);
+    margin-bottom:10px;
   }
   .restart-btn{
     background:#fff;border:2px solid var(--line);color:var(--ink-dim);
-    padding:8px 16px;border-radius:999px;font-size:13px;cursor:pointer;font-weight:700;
+    padding:7px 14px;border-radius:999px;font-size:12.5px;cursor:pointer;font-weight:700;
     font-family:'Noto Sans TC',sans-serif;
   }
   .restart-btn:hover{border-color:var(--coral);color:var(--coral-deep);}
 
   .graph-card{
-    margin-top:16px;background:var(--card);border:2px solid var(--line);
-    border-radius:var(--radius);padding:14px 14px 6px;position:relative;overflow:hidden;
+    background:var(--card);border:2px solid var(--line);
+    border-radius:var(--radius);padding:12px 12px 6px;position:relative;overflow:hidden;
     box-shadow:0 6px 18px rgba(31,37,68,.05);
   }
   .legend{
-    display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-dim);
-    padding:2px 10px 12px;font-family:'JetBrains Mono',monospace;font-weight:700;
+    display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--ink-dim);
+    padding:2px 6px 10px;font-family:'JetBrains Mono',monospace;font-weight:700;
   }
-  .legend span{display:inline-flex;align-items:center;gap:6px;}
-  .swatch{width:20px;height:0;border-top:3px solid;display:inline-block;border-radius:2px;}
+  .legend span{display:inline-flex;align-items:center;gap:5px;}
+  .swatch{width:16px;height:0;border-top:3px solid;display:inline-block;border-radius:2px;}
   .sw-base{border-color:#c3c7de;border-top-style:dashed;}
   .sw-target{border-color:var(--violet);border-top-style:dashed;}
   .sw-you{border-color:var(--pink);}
@@ -94,7 +111,7 @@
   .axis{stroke:#a9adc9;stroke-width:1.8;}
   .tick-dot{fill:#fff;stroke:#8b8fb0;stroke-width:1.4;}
   .tick-dot.strong{fill:#6b7290;}
-  .axis-label{fill:var(--ink-dim);font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;}
+  .axis-label{fill:var(--ink-dim);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;}
   .curve-base{fill:none;stroke:#c3c7de;stroke-width:2;stroke-dasharray:5 5;}
   .curve-target{fill:none;stroke:var(--violet);stroke-width:2.5;stroke-dasharray:2 6;opacity:.9;}
   .curve-you{fill:none;stroke:var(--pink);stroke-width:3.2;filter:drop-shadow(0 0 5px rgba(255,79,163,.35));transition:d .15s ease;}
@@ -106,7 +123,7 @@
     40%,60%{transform:translateX(8px);}
   }
 
-  .steps{display:flex;flex-direction:column;gap:16px;margin-top:16px;}
+  .steps{display:flex;flex-direction:column;gap:16px;}
   .step{
     background:var(--card);border:2px solid var(--line);border-radius:var(--radius);
     padding:18px 20px;transition:opacity .25s ease, filter .25s ease;
@@ -140,7 +157,7 @@
 
   .order-picker{display:flex;gap:14px;margin-bottom:16px;flex-wrap:wrap;align-items:flex-start;}
   .order-opt{
-    flex:1 1 340px;border:2px solid var(--line);border-radius:14px;padding:14px 16px 16px;
+    flex:1 1 320px;border:2px solid var(--line);border-radius:14px;padding:14px 16px 16px;
     cursor:pointer;background:#fbfbff;transition:border-color .15s ease, box-shadow .15s ease;
   }
   .order-opt .opt-head{font-size:13.5px;}
@@ -164,7 +181,7 @@
   .group-arrow{text-align:center;color:#b6bae0;font-size:16px;margin:2px 0 8px;}
 
   .field-row{display:flex;gap:10px;flex-wrap:wrap;}
-  .field{display:flex;flex-direction:column;gap:6px;min-width:130px;flex:1;}
+  .field{display:flex;flex-direction:column;gap:6px;min-width:120px;flex:1;}
   .field label{font-size:12px;color:var(--ink-dim);font-weight:700;}
   .field input{
     background:#fff;border:2px solid var(--line);color:var(--ink);
@@ -185,7 +202,7 @@
   .btn-confirm{background:var(--yellow);color:#5a3b00;}
   .btn-confirm:hover{background:var(--yellow-deep);color:#3d2700;}
   .btn-confirm:disabled{background:#eee;color:#aaa;cursor:not-allowed;}
-  .confirmed-summary{font-family:'JetBrains Mono',monospace;font-size:13.5px;color:var(--mint-deep);margin-top:6px;font-weight:700;}
+  .confirmed-summary{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--mint-deep);margin-top:6px;font-weight:700;}
 
   .check-row{display:flex;align-items:center;gap:10px;}
   .check-row .status{font-size:16px;width:20px;text-align:center;}
@@ -202,6 +219,22 @@
     margin-top:10px;background:var(--mint);color:#023d2c;font-weight:700;
     border:none;padding:11px 22px;border-radius:999px;cursor:pointer;font-size:14px;
   }
+
+  .finish-card{
+    display:none;background:linear-gradient(135deg,#fff7e0,#ffe6f2);
+    border:2px solid var(--yellow);border-radius:var(--radius);padding:20px 22px;margin-top:16px;
+    text-align:center;
+  }
+  .finish-card.show{display:block;}
+  .finish-card .big{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;margin-bottom:6px;}
+  .finish-card .time{
+    font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:700;color:var(--violet-deep);margin:8px 0;
+  }
+  .finish-card .again-btn{
+    margin-top:10px;background:var(--violet);color:#fff;border:none;
+    padding:11px 24px;border-radius:999px;cursor:pointer;font-size:14px;font-weight:700;
+  }
+
   footer{margin-top:22px;font-size:12.5px;color:#9296b5;line-height:1.8;}
 </style>
 </head>
@@ -209,124 +242,139 @@
 <div class="wrap">
   <header>
     <div class="eyebrow">STACKING UP · 波浪造塔工程</div>
-    <h1>正弦函數造塔工程 <span class="lv" id="levelTag">LEVEL 1</span></h1>
-    <div class="sub">目標函數已經給定。這次你要自己決定「先伸縮再平移」還是「先平移再伸縮」，並依照邏輯順序填入對應的數字——同一個目標函數，兩種順序需要的數字不一定相同，選錯順序又套錯數字，塔就蓋歪了！</div>
+    <h1>正弦函數造塔工程</h1>
+    <div class="sub">目標函數已經給定。這次你要自己決定「先伸縮再平移」還是「先平移再伸縮」，並依照邏輯順序填入對應的數字——同一個目標函數，兩種順序需要的數字不一定相同，選錯順序又套錯數字，塔就蓋歪了！全部共 10 題，題目跟圖形會一路跟著你，不用往上滑。</div>
+    <div class="hud">
+      <div class="progress-wrap">
+        <div class="progress-tag">第 <span id="qNum">1</span> / <span id="qTotal">10</span> 題</div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:10%"></div></div>
+      </div>
+      <div class="timer-badge" id="timerBadge">⏱ <span id="timerText">00:00</span></div>
+    </div>
   </header>
 
-  <div class="target-card">
-    <div>
-      <div class="lbl">🎯 本關目標函數</div>
-      <div class="target-fn" id="targetFn">y = 3 sin(x) + 1</div>
-    </div>
-    <button class="restart-btn" id="restartBtn">↺ 重新開始本關</button>
-  </div>
-
-  <div class="graph-card" id="graphCard">
-    <div class="legend">
-      <span><i class="swatch sw-base"></i> 基底 y = sin x</span>
-      <span><i class="swatch sw-target"></i> 目標圖形（對齊用）</span>
-      <span><i class="swatch sw-you"></i> 你正在建構的圖形</span>
-    </div>
-    <svg id="graphSvg" viewBox="0 0 900 460" xmlns="http://www.w3.org/2000/svg"></svg>
-  </div>
-
-  <div class="steps">
-    <!-- STEP 1: 建構函數（伸縮 + 平移，順序自選，各自 4 格） -->
-    <div class="step" id="step1">
-      <div class="step-head">
-        <div class="step-title"><span class="tag">STEP 1</span> 造塔工程：選順序、依序填數字</div>
+  <div class="layout">
+    <div class="sticky-col">
+      <div class="target-card">
+        <div class="lbl">🎯 本題目標函數</div>
+        <div class="target-fn" id="targetFn">y = 3 sin(x) + 1</div>
+        <button class="restart-btn" id="restartBtn">↺ 重新開始本題</button>
       </div>
-      <div class="step-note">先點選一種操作順序，該卡片下方會依邏輯順序展開對應的輸入格。輸入的同時右邊粉紅色曲線會即時預覽，最後按「確認」看看是否精準疊上目標圖形（紫色虛線）。</div>
-
-      <button class="hint-toggle" id="hintToggle">💡 兩種順序的數字關係，我還是不懂……</button>
-      <div class="hint-box" id="hintBox">
-        設 y = sin x 依「先伸縮（a, b）再平移（h, d）」得到 <code>a·sin(b(x−h)) + d</code>——這就是目標函數本身長的樣子。<br><br>
-        如果你想「先平移（h, d）再伸縮（a, b）」，會得到 <code>a·sin(bx − h) + a·d</code>。<br><br>
-        想讓兩者畫出同一個圖形，「先平移再伸縮」時要填入的 <b>h</b> 要改成 <b>b×（原本的 h）</b>，<b>d</b> 要改成 <b>（原本的 d）÷ a</b>，a、b 不變。動手試算看看，再輸入下面的欄位！
+      <div class="graph-card" id="graphCard">
+        <div class="legend">
+          <span><i class="swatch sw-base"></i> 基底 sin x</span>
+          <span><i class="swatch sw-target"></i> 目標圖形</span>
+          <span><i class="swatch sw-you"></i> 你的圖形</span>
+        </div>
+        <svg id="graphSvg" viewBox="0 0 900 460" xmlns="http://www.w3.org/2000/svg"></svg>
       </div>
+    </div>
 
-      <div class="order-picker">
-        <!-- 選項一：先伸縮，再平移 -->
-        <div class="order-opt selected" data-order="scaleFirst" id="optScaleFirst">
-          <div class="opt-head"><b>🔧 先伸縮，再平移</b>y = sin x → 拉伸/壓縮 → 再整體平移</div>
-          <div class="order-fields">
-            <div class="field-group">
-              <div class="group-label"><span class="badge">①</span> 伸縮</div>
-              <div class="field-row">
-                <div class="field"><label>振幅倍數 a</label><input type="text" id="inputA1" placeholder="例如 3"></div>
-                <div class="field"><label>水平伸縮倍數 b</label><input type="text" id="inputB1" placeholder="例如 1"></div>
+    <div class="steps">
+      <!-- STEP 1: 建構函數（伸縮 + 平移，順序自選，各自 4 格） -->
+      <div class="step" id="step1">
+        <div class="step-head">
+          <div class="step-title"><span class="tag">STEP 1</span> 造塔工程：選順序、依序填數字</div>
+        </div>
+        <div class="step-note">先點選一種操作順序，該卡片下方會依邏輯順序展開對應的輸入格。輸入的同時左邊粉紅色曲線會即時預覽，最後按「確認」看看是否精準疊上目標圖形（紫色虛線）。</div>
+
+        <button class="hint-toggle" id="hintToggle">💡 兩種順序的數字關係，我還是不懂……</button>
+        <div class="hint-box" id="hintBox">
+          設 y = sin x 依「先伸縮（a, b）再平移（h, d）」得到 <code>a·sin(b(x−h)) + d</code>——這就是目標函數本身長的樣子。<br><br>
+          如果你想「先平移（h, d）再伸縮（a, b）」，會得到 <code>a·sin(bx − h) + a·d</code>。<br><br>
+          想讓兩者畫出同一個圖形，「先平移再伸縮」時要填入的 <b>h</b> 要改成 <b>b×（原本的 h）</b>，<b>d</b> 要改成 <b>（原本的 d）÷ a</b>，a、b 不變。動手試算看看，再輸入下面的欄位！
+        </div>
+
+        <div class="order-picker">
+          <!-- 選項一：先伸縮，再平移 -->
+          <div class="order-opt selected" data-order="scaleFirst" id="optScaleFirst">
+            <div class="opt-head"><b>🔧 先伸縮，再平移</b>y = sin x → 拉伸/壓縮 → 再整體平移</div>
+            <div class="order-fields">
+              <div class="field-group">
+                <div class="group-label"><span class="badge">①</span> 伸縮</div>
+                <div class="field-row">
+                  <div class="field"><label>振幅倍數 a</label><input type="text" id="inputA1" placeholder="例如 3"></div>
+                  <div class="field"><label>水平伸縮倍數 b</label><input type="text" id="inputB1" placeholder="例如 1"></div>
+                </div>
+              </div>
+              <div class="group-arrow">↓</div>
+              <div class="field-group">
+                <div class="group-label"><span class="badge">②</span> 平移</div>
+                <div class="field-row">
+                  <div class="field"><label>水平平移 h</label><input type="text" id="inputH1" placeholder="pi/3 或 0"><span class="hint">可直接打 pi</span></div>
+                  <div class="field"><label>垂直平移 d</label><input type="text" id="inputD1" placeholder="例如 1"></div>
+                </div>
               </div>
             </div>
-            <div class="group-arrow">↓</div>
-            <div class="field-group">
-              <div class="group-label"><span class="badge">②</span> 平移</div>
-              <div class="field-row">
-                <div class="field"><label>水平平移 h</label><input type="text" id="inputH1" placeholder="pi/3 或 0"><span class="hint">可直接打 pi</span></div>
-                <div class="field"><label>垂直平移 d</label><input type="text" id="inputD1" placeholder="例如 1"></div>
+          </div>
+
+          <!-- 選項二：先平移，再伸縮 -->
+          <div class="order-opt" data-order="shiftFirst" id="optShiftFirst">
+            <div class="opt-head"><b>🔀 先平移，再伸縮</b>y = sin x → 先整體平移 → 再拉伸/壓縮</div>
+            <div class="order-fields">
+              <div class="field-group">
+                <div class="group-label"><span class="badge">①</span> 平移</div>
+                <div class="field-row">
+                  <div class="field"><label>水平平移 h</label><input type="text" id="inputH2" placeholder="pi/3 或 0"><span class="hint">可直接打 pi</span></div>
+                  <div class="field"><label>垂直平移 d</label><input type="text" id="inputD2" placeholder="例如 1"></div>
+                </div>
+              </div>
+              <div class="group-arrow">↓</div>
+              <div class="field-group">
+                <div class="group-label"><span class="badge">②</span> 伸縮</div>
+                <div class="field-row">
+                  <div class="field"><label>振幅倍數 a</label><input type="text" id="inputA2" placeholder="例如 3"></div>
+                  <div class="field"><label>水平伸縮倍數 b</label><input type="text" id="inputB2" placeholder="例如 1"></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- 選項二：先平移，再伸縮 -->
-        <div class="order-opt" data-order="shiftFirst" id="optShiftFirst">
-          <div class="opt-head"><b>🔀 先平移，再伸縮</b>y = sin x → 先整體平移 → 再拉伸/壓縮</div>
-          <div class="order-fields">
-            <div class="field-group">
-              <div class="group-label"><span class="badge">①</span> 平移</div>
-              <div class="field-row">
-                <div class="field"><label>水平平移 h</label><input type="text" id="inputH2" placeholder="pi/3 或 0"><span class="hint">可直接打 pi</span></div>
-                <div class="field"><label>垂直平移 d</label><input type="text" id="inputD2" placeholder="例如 1"></div>
-              </div>
-            </div>
-            <div class="group-arrow">↓</div>
-            <div class="field-group">
-              <div class="group-label"><span class="badge">②</span> 伸縮</div>
-              <div class="field-row">
-                <div class="field"><label>振幅倍數 a</label><input type="text" id="inputA2" placeholder="例如 3"></div>
-                <div class="field"><label>水平伸縮倍數 b</label><input type="text" id="inputB2" placeholder="例如 1"></div>
-              </div>
-            </div>
+        <div class="btn-row">
+          <button class="action btn-reset" id="reset1">重來</button>
+          <button class="action btn-confirm" id="confirm1">確認</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: 最終驗收 -->
+      <div class="step locked" id="step2">
+        <div class="step-head">
+          <div class="step-title"><span class="tag">STEP 2</span> 塔頂驗收：讀出圖形性質</div>
+        </div>
+        <div class="step-note">塔身完成！請根據目標圖形分別填入最大值、最小值、週期。π 一樣可以直接打 <b>pi</b>（例如 2pi、2pi/3、-pi/2）。</div>
+        <div class="field-row">
+          <div class="field">
+            <label>最大值</label>
+            <input type="text" id="inputMax" placeholder="例如 4">
+          </div>
+          <div class="field">
+            <label>最小值</label>
+            <input type="text" id="inputMin" placeholder="例如 -2">
+          </div>
+          <div class="field">
+            <label>週期</label>
+            <input type="text" id="inputPeriod" placeholder="例如 2pi 或 pi/2">
           </div>
         </div>
+        <div class="btn-row">
+          <button class="action btn-reset" id="reset2">重來</button>
+          <button class="action btn-confirm" id="confirm2">揭曉答案</button>
+        </div>
+        <div class="result" id="resultBox"></div>
       </div>
 
-      <div class="btn-row">
-        <button class="action btn-reset" id="reset1">重來</button>
-        <button class="action btn-confirm" id="confirm1">確認</button>
+      <div class="finish-card" id="finishCard">
+        <div class="big">🎉 恭喜完成全部 10 題！</div>
+        <div>通過時間</div>
+        <div class="time" id="finishTime">00:00</div>
+        <button class="again-btn" id="againBtn">再挑戰一次全部 10 題</button>
       </div>
-    </div>
-
-    <!-- STEP 2: 最終驗收 -->
-    <div class="step locked" id="step2">
-      <div class="step-head">
-        <div class="step-title"><span class="tag">STEP 2</span> 塔頂驗收：讀出圖形性質</div>
-      </div>
-      <div class="step-note">塔身完成！請根據目標圖形分別填入最大值、最小值、週期。π 一樣可以直接打 <b>pi</b>（例如 2pi、2pi/3、-pi/2）。</div>
-      <div class="field-row">
-        <div class="field">
-          <label>最大值</label>
-          <input type="text" id="inputMax" placeholder="例如 4">
-        </div>
-        <div class="field">
-          <label>最小值</label>
-          <input type="text" id="inputMin" placeholder="例如 -2">
-        </div>
-        <div class="field">
-          <label>週期</label>
-          <input type="text" id="inputPeriod" placeholder="例如 2pi 或 pi/2">
-        </div>
-      </div>
-      <div class="btn-row">
-        <button class="action btn-reset" id="reset2">重來</button>
-        <button class="action btn-confirm" id="confirm2">揭曉答案</button>
-      </div>
-      <div class="result" id="resultBox"></div>
     </div>
   </div>
 
   <footer>
-    📐 小提醒：課本教的「先伸縮、再平移」是最直覺、可以直接套公式 y = a·sin(b(x−h)) + d 的順序。「先平移再伸縮」不是不能用，只是平移量會被後面的伸縮再放大一次，所以填入的數字要相應調整——這正是這一關要練習的重點。STEP 1 答對之後仍然可以按「重來」，換另一種順序再挑戰一次。
+    📐 小提醒：課本教的「先伸縮、再平移」是最直覺、可以直接套公式 y = a·sin(b(x−h)) + d 的順序。「先平移再伸縮」不是不能用，只是平移量會被後面的伸縮再放大一次，所以填入的數字要相應調整——這正是這一題要練習的重點。STEP 1 答對之後仍然可以按「重來」，換另一種順序再挑戰一次。
   </footer>
 </div>
 
@@ -380,26 +428,46 @@
     return s;
   }
 
-  // ---------- level generator ----------
-  const LEVELS = [
+  // ---------- 10 fixed questions ----------
+  const QUESTIONS = [
     {a:3, b:1, h:0, d:1},
-    {a:2, b:1, h:Math.PI/2, d:-1},
+    {a:2, b:1, h:0, d:-1},
+    {a:1, b:1, h:Math.PI/2, d:0},
+    {a:2, b:1, h:Math.PI/4, d:1},
+    {a:1, b:2, h:0, d:0},
+    {a:3, b:2, h:0, d:-2},
+    {a:2, b:1, h:-Math.PI/3, d:2},
+    {a:1, b:3, h:Math.PI/6, d:0},
+    {a:4, b:1, h:Math.PI/2, d:-1},
     {a:2, b:2, h:Math.PI/4, d:1},
   ];
-  let levelIndex = 0;
-  let target = {...LEVELS[0]};
+  let qIndex = 0;
+  let target = {...QUESTIONS[0]};
 
-  function randomLevel(){
-    const aChoices=[2,3,4,-2];
-    const bChoices=[1,1,2,3];
-    const hChoices=[0,Math.PI/2,Math.PI/3,Math.PI/4,Math.PI/6,-Math.PI/2,-Math.PI/3];
-    const dChoices=[0,1,-1,2,-2];
-    return {
-      a: aChoices[Math.floor(Math.random()*aChoices.length)],
-      b: bChoices[Math.floor(Math.random()*bChoices.length)],
-      h: hChoices[Math.floor(Math.random()*hChoices.length)],
-      d: dChoices[Math.floor(Math.random()*dChoices.length)],
-    };
+  // ---------- timer ----------
+  let startTime = Date.now();
+  let timerInterval = null;
+  let quizFinished = false;
+  function fmtTime(ms){
+    const totalSec = Math.floor(ms/1000);
+    const mm = String(Math.floor(totalSec/60)).padStart(2,'0');
+    const ss = String(totalSec%60).padStart(2,'0');
+    return mm+":"+ss;
+  }
+  function tickTimer(){
+    document.getElementById('timerText').textContent = fmtTime(Date.now()-startTime);
+  }
+  function startTimer(){
+    startTime = Date.now();
+    document.getElementById('timerBadge').classList.remove('stopped');
+    if(timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(tickTimer, 250);
+    tickTimer();
+  }
+  function stopTimer(){
+    if(timerInterval) clearInterval(timerInterval);
+    timerInterval = null;
+    document.getElementById('timerBadge').classList.add('stopped');
   }
 
   // ---------- graph geometry ----------
@@ -482,7 +550,6 @@
   const step1 = el('step1'), step2 = el('step2');
   const inputMax = el('inputMax'), inputMin = el('inputMin'), inputPeriod = el('inputPeriod');
 
-  // two independent field sets, 8 boxes total
   const scaleFields = { a: el('inputA1'), b: el('inputB1'), h: el('inputH1'), d: el('inputD1') };
   const shiftFields = { h: el('inputH2'), d: el('inputD2'), a: el('inputA2'), b: el('inputB2') };
   const allFields = [scaleFields.a, scaleFields.b, scaleFields.h, scaleFields.d,
@@ -521,7 +588,6 @@
   el('reset1').addEventListener('click', ()=>{
     allFields.forEach(inp=>{ inp.value=''; inp.disabled=false; });
     el('confirm1').disabled=false;
-    el('optScaleFirst').style.cursor=''; el('optShiftFirst').style.cursor='';
     step1Done = false;
     step1.classList.remove('done');
     const summary = step1.querySelector('.confirmed-summary'); if(summary) summary.remove();
@@ -536,6 +602,7 @@
   });
 
   el('confirm1').addEventListener('click', ()=>{
+    if(quizFinished) return;
     const f = currentOrder==='scaleFirst' ? scaleFields : shiftFields;
     const a=parseMathInput(f.a.value), b=parseMathInput(f.b.value);
     const h=parseMathInput(f.h.value), d=parseMathInput(f.d.value);
@@ -584,6 +651,7 @@
   }
 
   el('confirm2').addEventListener('click', ()=>{
+    if(quizFinished) return;
     const userMax = parseMathInput(inputMax.value);
     const userMin = parseMathInput(inputMin.value);
     const userPeriod = parseMathInput(inputPeriod.value);
@@ -603,9 +671,14 @@
     rows += rowLine('最小值', okMin, fmtNum(trueMin));
     rows += rowLine('週期', okPeriod, formatPi(truePeriod));
     if(allOk){
-      box.innerHTML = `<div style="font-size:16px;font-weight:700;color:var(--mint-deep);margin-bottom:6px;">🏗️ 造塔成功！全部過關。</div>` + rows +
-        `<button class="next-btn" id="nextLevelBtn">下一關 →</button>`;
-      el('nextLevelBtn').addEventListener('click', nextLevel);
+      const isLast = (qIndex === QUESTIONS.length-1);
+      box.innerHTML = `<div style="font-size:16px;font-weight:700;color:var(--mint-deep);margin-bottom:6px;">🏗️ 造塔成功！本題過關。</div>` + rows +
+        (isLast ? '' : `<button class="next-btn" id="nextLevelBtn">下一題 →</button>`);
+      if(!isLast){
+        el('nextLevelBtn').addEventListener('click', nextQuestion);
+      } else {
+        finishQuiz();
+      }
     } else {
       box.innerHTML = `<div style="font-size:16px;font-weight:700;color:var(--coral-deep);margin-bottom:6px;">⚠️ 還沒對齊，再檢查一下：</div>` + rows +
         `<div style="margin-top:8px;color:var(--ink-dim);font-size:13px;">可以按上方「重來」清空這三格重新填寫。</div>`;
@@ -621,11 +694,12 @@
 
   function setTargetDisplay(){
     el('targetFn').textContent = fnLabel(target.a,target.b,target.h,target.d);
-    el('levelTag').textContent = 'LEVEL ' + (levelIndex+1);
+    el('qNum').textContent = qIndex+1;
+    el('progressFill').style.width = (((qIndex+1)/QUESTIONS.length)*100) + '%';
     redrawTarget();
   }
 
-  function resetLevelUI(){
+  function resetQuestionUI(){
     allFields.forEach(inp=>{ inp.value=''; inp.disabled=false; });
     inputMax.value=''; inputMin.value=''; inputPeriod.value='';
     step1Done = false;
@@ -639,23 +713,45 @@
     setOrder('scaleFirst');
   }
 
-  function nextLevel(){
-    levelIndex++;
-    target = levelIndex < LEVELS.length ? {...LEVELS[levelIndex]} : randomLevel();
+  function nextQuestion(){
+    qIndex++;
+    target = {...QUESTIONS[qIndex]};
     setTargetDisplay();
-    resetLevelUI();
+    resetQuestionUI();
+  }
+
+  function finishQuiz(){
+    quizFinished = true;
+    stopTimer();
+    document.getElementById('finishTime').textContent = fmtTime(Date.now()-startTime);
+    document.getElementById('finishCard').classList.add('show');
+    step1.classList.add('locked');
+    step2.classList.add('locked');
+  }
+
+  function restartWholeQuiz(){
+    qIndex = 0;
+    quizFinished = false;
+    target = {...QUESTIONS[0]};
+    document.getElementById('finishCard').classList.remove('show');
+    setTargetDisplay();
+    resetQuestionUI();
+    step1.classList.remove('locked');
+    startTimer();
   }
 
   el('restartBtn').addEventListener('click', ()=>{
-    target = levelIndex < LEVELS.length ? {...LEVELS[levelIndex]} : {...target};
+    target = {...QUESTIONS[qIndex]};
     setTargetDisplay();
-    resetLevelUI();
+    resetQuestionUI();
   });
+  el('againBtn').addEventListener('click', restartWholeQuiz);
 
   // ---------- init ----------
   initSvg();
   setTargetDisplay();
   redrawYou();
+  startTimer();
 })();
 </script>
 </body>
