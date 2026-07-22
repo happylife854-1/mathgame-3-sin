@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>波浪造塔工程 - 結構解謎版</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+        .header { text-align: center; margin-bottom: 20px; }
+        h1 { color: #2c3e50; margin: 0 0 10px 0; }
+        
+        .game-panel { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 600px; text-align: center; }
+        
+        .level-badge { background: #f39c12; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; display: inline-block; margin-bottom: 15px; }
+        .target-box { font-size: 22px; color: #c0392b; font-weight: bold; padding: 15px; background: #fdedec; border: 2px dashed #e74c3c; border-radius: 10px; margin-bottom: 20px; }
+        .current-box { font-size: 26px; color: #2980b9; font-weight: bold; margin: 20px 0; min-height: 40px; padding: 10px; background: #eaf2f8; border-radius: 10px; }
+        
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        button { padding: 12px; font-size: 16px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; color: white; transition: 0.1s; }
+        button:active { transform: translateY(2px); }
+        button:disabled { background-color: #bdc3c7 !important; cursor: not-allowed; transform: none; }
+        
+        .btn-amp { background-color: #3498db; box-shadow: 0 4px 0 #2980b9; }
+        .btn-vshift { background-color: #9b59b6; box-shadow: 0 4px 0 #8e44ad; }
+        .btn-period { background-color: #e67e22; box-shadow: 0 4px 0 #d35400; }
+        .btn-hshift { background-color: #1abc9c; box-shadow: 0 4px 0 #16a085; }
+        .btn-reset { background-color: #7f8c8d; width: 100%; box-shadow: 0 4px 0 #707b7c; margin-bottom: 10px; }
+        
+        #statusMessage { font-size: 18px; font-weight: bold; margin: 15px 0; min-height: 25px; color: #34495e; }
+        
+        /* 驗收區塊 */
+        .verify-panel { display: none; background: #fff3e0; padding: 20px; border-radius: 10px; border: 2px solid #ffb300; margin-top: 20px; }
+        .verify-panel input { width: 60px; padding: 8px; margin: 0 10px; text-align: center; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; }
+        .btn-verify { background-color: #e74c3c; margin-top: 15px; width: 100%; box-shadow: 0 4px 0 #c0392b; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>🏗️ 波浪造塔工程</h1>
+        <p style="color: #7f8c8d;">請依序放置方塊，思考變換對方程式的影響</p>
+    </div>
+
+    <div class="game-panel">
+        <div class="level-badge" id="levelDisplay">第一關：牛刀小試</div>
+        
+        <div class="target-box" id="targetDisplay">目標藍圖： y = 3sin(x) - 2</div>
+        
+        <div style="color: #7f8c8d; font-size: 14px;">目前地基狀態：</div>
+        <div class="current-box" id="currentDisplay">y = sin(x)</div>
+
+        <div id="statusMessage">請選擇要放置的方塊...</div>
+
+        <div class="controls" id="blockControls">
+            <!-- 按鈕由 JS 動態生成 -->
+        </div>
+
+        <button class="btn-reset" onclick="resetLevel()">🔄 拆除重建 (退回原點)</button>
+
+        <!-- 工程驗收區 -->
+        <div class="verify-panel" id="verifyPanel">
+            <h3 style="color: #d35400; margin-top: 0;">✅ 結構驗收</h3>
+            <p style="font-size: 14px; color: #555;">塔蓋好了！請計算此函數的屬性以完工：</p>
+            <div>
+                週期: <input type="text" id="ansPeriod" placeholder="ex: 2π">
+                最大值: <input type="text" id="ansMax" placeholder="數字">
+                最小值: <input type="text" id="ansMin" placeholder="數字">
+            </div>
+            <button class="btn-verify" onclick="checkVerification()">提交驗收報告</button>
+        </div>
+    </div>
+
+<script>
+    // 關卡資料庫
+    const levels = [
+        {
+            title: "第一關：振幅與上下平移",
+            target: "3sin(x) - 2",
+            blocks: [
+                { type: "amp", value: "3", label: "振幅變 3 倍", class: "btn-amp" },
+                { type: "vshift", value: "- 2", label: "向下移 2 單位", class: "btn-vshift" }
+            ],
+            ans: { period: "2π", max: "1", min: "-5" }
+        },
+        {
+            title: "第二關：週期與左右平移 (陷阱題)",
+            target: "sin(2(x + π/4))", // 正確需要先週期再平移
+            blocks: [
+                { type: "period", value: "2", label: "週期變為一半", class: "btn-period" },
+                { type: "hshift", value: "+ π/4", label: "向左移 π/4", class: "btn-hshift" }
+            ],
+            ans: { period: "π", max: "1", min: "-1" }
+        },
+        {
+            title: "第三關：綜合大挑戰",
+            target: "2sin(1/2(x - π)) + 1",
+            blocks: [
+                { type: "amp", value: "2", label: "振幅變 2 倍", class: "btn-amp" },
+                { type: "vshift", value: "+ 1", label: "向上移 1 單位", class: "btn-vshift" },
+                { type: "period", value: "1/2", label: "週期變為 2 倍", class: "btn-period" },
+                { type: "hshift", value: "- π", label: "向右移 π", class: "btn-hshift" }
+            ],
+            ans: { period: "4π", max: "3", min: "-1" }
+        }
+    ];
+
+    let currentLevel = 0;
+    let currentExpression = "sin(x)";
+    let isLevelComplete = false;
+
+    function initLevel() {
+        const levelData = levels[currentLevel];
+        document.getElementById('levelDisplay').innerText = levelData.title;
+        document.getElementById('targetDisplay').innerText = `目標藍圖： y = ${levelData.target}`;
+        
+        currentExpression = "sin(x)";
+        updateDisplay();
+        
+        const controls = document.getElementById('blockControls');
+        controls.innerHTML = "";
+        levelData.blocks.forEach((block, index) => {
+            const btn = document.createElement('button');
+            btn.className = block.class;
+            btn.innerText = block.label;
+            btn.onclick = () => applyBlock(block, btn);
+            controls.appendChild(btn);
+        });
+
+        document.getElementById('verifyPanel').style.display = "none";
+        document.getElementById('statusMessage').innerText = "請選擇要放置的方塊...";
+        document.getElementById('statusMessage').style.color = "#34495e";
+        
+        document.getElementById('ansPeriod').value = "";
+        document.getElementById('ansMax').value = "";
+        document.getElementById('ansMin').value = "";
+        isLevelComplete = false;
+    }
+
+    function updateDisplay() {
+        document.getElementById('currentDisplay').innerText = `y = ${currentExpression}`;
+    }
+
+    // 核心數學變換邏輯 (嚴格模擬代數替換)
+    function applyBlock(block, btnElement) {
+        if (isLevelComplete) return;
+
+        if (block.type === "amp") {
+            if (currentExpression.includes("+") || currentExpression.includes("-") && !currentExpression.startsWith("sin")) {
+                currentExpression = `${block.value}(${currentExpression})`; // 觸發分配律陷阱
+            } else {
+                currentExpression = `${block.value}${currentExpression}`;
+            }
+        } 
+        else if (block.type === "vshift") {
+            currentExpression = `${currentExpression} ${block.value}`;
+        }
+        else if (block.type === "period") {
+            // 取代 x 為 bx
+            currentExpression = currentExpression.replace(/x/g, `${block.value}x`);
+        }
+        else if (block.type === "hshift") {
+            // 取代 x 為 (x - h)
+            currentExpression = currentExpression.replace(/x/g, `(x ${block.value})`);
+        }
+
+        btnElement.disabled = true; // 用過的方塊不能再用
+        updateDisplay();
+        checkStructure();
+    }
+
+    function checkStructure() {
+        const status = document.getElementById('statusMessage');
+        const target = levels[currentLevel].target;
+        
+        // 檢查按鈕是否全用完
+        const buttons = document.querySelectorAll('#blockControls button');
+        const allUsed = Array.from(buttons).every(btn => btn.disabled);
+
+        if (allUsed) {
+            if (currentExpression === target) {
+                status.innerHTML = "✨ 結構穩定！請進行最後的數據驗收！";
+                status.style.color = "#27ae60";
+                document.getElementById('verifyPanel').style.display = "block";
+                isLevelComplete = true;
+            } else {
+                status.innerHTML = "💥 順序錯誤導致圖形變形 (分配律陷阱)！塔倒塌了！";
+                status.style.color = "#c0392b";
+                document.getElementById('currentDisplay').style.color = "#c0392b";
+            }
+        }
+    }
+
+    function checkVerification() {
+        const p = document.getElementById('ansPeriod').value.trim();
+        const max = document.getElementById('ansMax').value.trim();
+        const min = document.getElementById('ansMin').value.trim();
+        const ans = levels[currentLevel].ans;
+
+        if (p === ans.period && max === ans.max && min === ans.min) {
+            alert("🎉 驗收完美通過！準備進入下一關！");
+            currentLevel++;
+            if (currentLevel < levels.length) {
+                document.getElementById('currentDisplay').style.color = "#2980b9";
+                initLevel();
+            } else {
+                document.getElementById('game-panel').innerHTML = "<h2>🏆 恭喜你，成為三角造塔大師！</h2>";
+            }
+        } else {
+            alert("❌ 驗收失敗！請重新檢查週期與極值的計算。");
+        }
+    }
+
+    function resetLevel() {
+        document.getElementById('currentDisplay').style.color = "#2980b9";
+        initLevel();
+    }
+
+    window.onload = initLevel;
+</script>
+
+</body>
+</html>
