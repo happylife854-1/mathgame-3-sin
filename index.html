@@ -61,7 +61,8 @@
   .timer-badge{ font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#7a4b00; background:var(--yellow);padding:7px 16px;border-radius:999px;display:flex;align-items:center;gap:6px; white-space:nowrap; }
   .timer-badge.stopped{background:var(--mint);color:#023d2c;}
 
-.layout{display:grid;grid-template-columns:400px 1fr;gap:20px;margin-top:16px;align-items:start;}
+  /* 解除手機版固定定位 */
+  .layout{display:grid;grid-template-columns:400px 1fr;gap:20px;margin-top:16px;align-items:start;}
   .sticky-col{display:flex;flex-direction:column;gap:16px;}
 
   @media (max-width: 880px){ 
@@ -162,12 +163,12 @@
 
     // ⚠️ 老師請注意：務必換成你共用的那組 Firebase 金鑰！
     const firebaseConfig = {
-  apiKey: "AIzaSyD5TCsm03LPSR4zRRavUN8jR2d_-dI0giI",
-  authDomain: "math-summer-camp-37878.firebaseapp.com",
-  projectId: "math-summer-camp-37878",
-  storageBucket: "math-summer-camp-37878.firebasestorage.app",
-  messagingSenderId: "913471474686",
-  appId: "1:913471474686:web:d16c1d51aa407ce418ceaf"
+        apiKey: "請貼上你的_API_KEY",
+        authDomain: "請貼上你的_AUTH_DOMAIN",
+        projectId: "請貼上你的_PROJECT_ID",
+        storageBucket: "請貼上你的_STORAGE_BUCKET",
+        messagingSenderId: "請貼上你的_SENDER_ID",
+        appId: "請貼上你的_APP_ID"
     };
 
     try {
@@ -215,7 +216,7 @@
   <div class="layout">
     <div class="sticky-col">
       <div class="target-card">
-        <div class="lbl" id="levelTitleLbl">🎯 第 1 關：上下平移</div>
+        <div class="lbl" id="levelTitleLbl">🎯 第 1 關</div>
         <div class="target-fn" id="targetFn">y = 3 sin(x) + 1</div>
         <button class="restart-btn" id="restartBtn">↺ 重新開始本題</button>
       </div>
@@ -303,6 +304,7 @@ function startGame() {
     playerClass = document.getElementById('classSelect').value;
     playerAcc = document.getElementById('accInput').value.trim();
     playerName = document.getElementById('nameInput').value.trim();
+    
     if (!playerAcc || !playerName) {
         alert("請輸入學號與姓名喔！");
         return;
@@ -317,7 +319,7 @@ function startGame() {
 async function uploadResult(timeStr) {
     if(!window.db) return;
     try {
-        const collectionName = "Tower_" + playerClass; // 依據班級分類資料表
+        const collectionName = "Tower_" + playerClass;
         const docRef = window.fbDoc(window.db, collectionName, playerAcc);
         await window.fbSetDoc(docRef, {
             name: playerName,
@@ -345,7 +347,6 @@ const QUESTIONS = [
     { title: "第 8 題：進階順序考驗", a: 1, b: 3, h: Math.PI/6, d: 0, display: "y = sin(3x - π/2)" },
     { title: "第 9 題：綜合參數挑戰", a: 4, b: 1, h: Math.PI/2, d: -1, display: "y = 4 sin(x - π/2) - 1" },
     { title: "第 10 題：終極魔王關", a: 2, b: 2, h: Math.PI/4, d: 1, display: "y = 2 sin(2(x - π/4)) + 1" }
-];
 ];
 
 let selectedSequence = []; 
@@ -389,22 +390,13 @@ function fmtNum(x){
     return x.toFixed(2);
 }
 
-function fnLabel(a,b,h,d){
-    let s = "y = ";
-    s += (a===1?"":(a===-1?"-":fmtNum(a)+" ")) + "sin(";
-    if(Math.abs(b-1)>1e-9) s += fmtNum(b)+"·";
-    s += (Math.abs(h) < 1e-9) ? "x" : ("x − ("+formatPi(h)+")");
-    s += ")";
-    if(Math.abs(d) > 1e-9) s += (d>0? " + " : " − ") + fmtNum(Math.abs(d));
-    return s;
-}
-
 function fmtTime(ms){
     const totalSec = Math.floor(ms/1000);
     const mm = String(Math.floor(totalSec/60)).padStart(2,'0');
     const ss = String(totalSec%60).padStart(2,'0');
     return mm+":"+ss;
 }
+
 function tickTimer(){ document.getElementById('timerText').textContent = fmtTime(Date.now()-startTime); }
 function startTimer(){
     startTime = Date.now();
@@ -677,8 +669,8 @@ document.getElementById('reset2').addEventListener('click', ()=>{
 function rowLine(label, ok, correctVal){ return `<div class="check-row"><span class="status ${ok?'ok':'bad'}">${ok?'✓':'✗'}</span> ${label}：${ok? '正確' : ('答案是 '+correctVal)}</div>`; }
 
 function setTargetDisplay(){
-    document.getElementById('levelTitleLbl').textContent = "🎯 " + target.title; // 【修復】動態標題加回來了
-    document.getElementById('targetFn').textContent = fnLabel(target.a,target.b,target.h,target.d);
+    document.getElementById('levelTitleLbl').textContent = "🎯 " + target.title; 
+    document.getElementById('targetFn').textContent = target.display;
     document.getElementById('qNum').textContent = qIndex+1;
     document.getElementById('progressFill').style.width = (((qIndex+1)/QUESTIONS.length)*100) + '%';
     redrawTarget();
