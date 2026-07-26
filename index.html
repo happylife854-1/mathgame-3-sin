@@ -333,18 +333,19 @@ let startTime, timerInterval, quizFinished = false;
 let qIndex = 0;
 let target = {};
 
-// 10個關卡，參考講義內容設計
+// 10個關卡，完全對齊講義題目與難度遞增設計
 const QUESTIONS = [
-    { title: "第 1 關：上下平移", a: 1, b: 1, h: 0, d: 1 }, 
-    { title: "第 2 關：振幅伸縮", a: 2, b: 1, h: 0, d: 0 }, 
-    { title: "第 3 關：週期伸縮", a: 1, b: 2, h: 0, d: 0 }, 
-    { title: "第 4 關：左右平移", a: 1, b: 1, h: Math.PI/4, d: 0 }, 
-    { title: "第 5 關：振幅與平移", a: 2, b: 1, h: 0, d: -1 }, 
-    { title: "第 6 關：週期與平移", a: 1, b: 2, h: -Math.PI/2, d: 0 }, 
-    { title: "第 7 關：振幅與週期", a: 3, b: 0.5, h: 0, d: 0 }, 
-    { title: "第 8 關：綜合挑戰一", a: 3, b: 1, h: 0, d: -2 }, 
-    { title: "第 9 關：綜合挑戰二", a: 2, b: 2, h: Math.PI/4, d: 1 }, 
-    { title: "第 10 關：終極魔王關", a: 3, b: 2, h: Math.PI/8, d: -1 } 
+    { title: "第 1 題：振幅與垂直平移", a: 3, b: 1, h: 0, d: 1, display: "y = 3 sin(x) + 1" },
+    { title: "第 2 題：振幅與垂直平移", a: 2, b: 1, h: 0, d: -1, display: "y = 2 sin(x) - 1" },
+    { title: "第 3 題：加入水平平移", a: 1, b: 1, h: Math.PI/2, d: 0, display: "y = sin(x - π/2)  (其實就是 -cos x)" },
+    { title: "第 4 題：加入水平平移", a: 2, b: 1, h: Math.PI/4, d: 1, display: "y = 2 sin(x - π/4) + 1" },
+    { title: "第 5 題：加入水平伸縮", a: 1, b: 2, h: 0, d: 0, display: "y = sin(2x)" },
+    { title: "第 6 題：加入水平伸縮", a: 3, b: 2, h: 0, d: -2, display: "y = 3 sin(2x) - 2" },
+    { title: "第 7 題：綜合參數挑戰", a: 2, b: 1, h: -Math.PI/3, d: 2, display: "y = 2 sin(x + π/3) + 2" },
+    { title: "第 8 題：進階順序考驗", a: 1, b: 3, h: Math.PI/6, d: 0, display: "y = sin(3x - π/2)" },
+    { title: "第 9 題：綜合參數挑戰", a: 4, b: 1, h: Math.PI/2, d: -1, display: "y = 4 sin(x - π/2) - 1" },
+    { title: "第 10 題：終極魔王關", a: 2, b: 2, h: Math.PI/4, d: 1, display: "y = 2 sin(2(x - π/4)) + 1" }
+];
 ];
 
 let selectedSequence = []; 
