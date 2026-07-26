@@ -37,14 +37,15 @@
     font-family:'Noto Sans TC', system-ui, sans-serif;
     padding:22px 16px 60px;
   }
-  .wrap{max-width:1180px;margin:0 auto; display: none;} /* 預設隱藏，登入後顯示 */
+  .wrap{max-width:1180px;margin:0 auto; display: none;} 
   
-  /* 登入區塊 */
+  /* 登入區塊 (新增下拉選單) */
   #loginSection { max-width: 400px; margin: 100px auto; background: white; padding: 30px; border-radius: var(--radius); box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; border: 2px solid var(--line); border-top: 8px solid var(--violet); }
   #loginSection h2 { margin-top: 0; color: var(--ink); font-family: 'Space Grotesk', sans-serif; }
-  #loginSection input { width: 100%; padding: 12px; margin: 10px 0 20px; border: 2px solid var(--line); border-radius: 10px; font-size: 16px; font-family: 'JetBrains Mono', monospace; }
-  #loginSection input:focus { outline: none; border-color: var(--violet); }
-  #loginSection button { width: 100%; padding: 12px; background: var(--violet); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+  #loginSection select, #loginSection input { width: 100%; padding: 12px; margin: 10px 0 15px; border: 2px solid var(--line); border-radius: 10px; font-size: 16px; font-family: 'Noto Sans TC', sans-serif; }
+  #loginSection input { font-family: 'JetBrains Mono', monospace; }
+  #loginSection select:focus, #loginSection input:focus { outline: none; border-color: var(--violet); }
+  #loginSection button { width: 100%; padding: 12px; background: var(--violet); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 10px; }
   #loginSection button:hover { background: var(--violet-deep); }
 
   header{margin-bottom:14px;}
@@ -63,7 +64,6 @@
   .layout{display:grid;grid-template-columns:400px 1fr;gap:20px;margin-top:16px;align-items:start;}
   .sticky-col{position:sticky;top:16px;display:flex;flex-direction:column;gap:16px; z-index: 10;}
 
-  /* 手機版優化：圖形區塊吸頂且縮小高度，讓下方輸入區可見 */
   @media (max-width: 880px){ 
       .layout{grid-template-columns:1fr;} 
       .sticky-col{position:sticky; top: 0; background: var(--bg); padding: 10px 0; border-bottom: 2px solid var(--line); box-shadow: 0 10px 15px -10px rgba(0,0,0,0.1); margin-top: -10px;} 
@@ -108,7 +108,6 @@
   .step.done .step-title .tag{background:var(--mint);}
   .step-note{font-size:13px;color:var(--ink-dim);margin-bottom:14px;line-height:1.7;}
 
-  /* 自由排序四格積木 UI */
   .seq-builder { background: #fbfbff; border: 2px dashed var(--line); border-radius: 12px; padding: 15px; margin-bottom: 15px; }
   .op-pool { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; min-height: 40px; align-items: center;}
   .op-btn { background: #fff; border: 2px solid var(--violet); color: var(--violet-deep); padding: 8px 12px; border-radius: 8px; font-size: 13.5px; font-weight: bold; cursor: pointer; transition: 0.1s; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 3px 0 var(--violet); }
@@ -154,16 +153,14 @@
   .finish-card.show{display:block;}
   .finish-card .big{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;margin-bottom:6px;}
   .finish-card .time{ font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:700;color:var(--violet-deep);margin:8px 0; }
-  
-  footer{margin-top:22px;font-size:12.5px;color:#9296b5;line-height:1.8;}
 </style>
 
 <!-- 引入 Firebase 核心套件 -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc, collection, increment } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-    // ⚠️ 老師請注意：務必把大括號裡面的內容，換成你 Firebase 的真實金鑰！
+    // ⚠️ 老師請注意：務必換成你共用的那組 Firebase 金鑰！
     const firebaseConfig = {
   apiKey: "AIzaSyD5TCsm03LPSR4zRRavUN8jR2d_-dI0giI",
   authDomain: "math-summer-camp-37878.firebaseapp.com",
@@ -179,22 +176,28 @@
         window.fbSetDoc = setDoc;
         window.fbDoc = doc;
     } catch(e) {
-        console.error("Firebase 初始化失敗，請檢查金鑰：", e);
+        console.error("Firebase 初始化失敗：", e);
     }
 </script>
 </head>
 <body>
 
-<!-- 登入區塊 -->
 <div id="loginSection">
     <h2>📐 三角波浪造塔工程</h2>
-    <p style="color: var(--ink-dim); font-size: 14px; margin-bottom: 20px;">請先驗證工程師身分</p>
-    <input type="text" id="accInput" placeholder="班級座號：請輸入高二學號(範例：20205)">
+    <p style="color: var(--ink-dim); font-size: 14px; margin-bottom: 10px;">請先驗證工程師身分</p>
+    
+    <select id="classSelect">
+        <option value="測試版">1. 測試版</option>
+        <option value="202">2. A班(202)</option>
+        <option value="203">3. B班(203)</option>
+        <option value="209">4. D班(209)</option>
+    </select>
+
+    <input type="text" id="accInput" placeholder="班級座號 (範例：20205)">
     <input type="text" id="nameInput" placeholder="請輸入姓名">
     <button onclick="startGame()">進入工地</button>
 </div>
 
-<!-- 主要遊戲區塊 -->
 <div class="wrap" id="gameWrap">
   <header>
     <div class="eyebrow">STACKING UP · 波浪造塔工程</div>
@@ -212,7 +215,7 @@
   <div class="layout">
     <div class="sticky-col">
       <div class="target-card">
-        <div class="lbl">🎯 本題目標函數</div>
+        <div class="lbl" id="levelTitleLbl">🎯 第 1 關：上下平移</div>
         <div class="target-fn" id="targetFn">y = 3 sin(x) + 1</div>
         <button class="restart-btn" id="restartBtn">↺ 重新開始本題</button>
       </div>
@@ -227,12 +230,11 @@
     </div>
 
     <div class="steps">
-      <!-- STEP 1: 四格自排順序 -->
       <div class="step" id="step1">
         <div class="step-head">
           <div class="step-title"><span class="tag">STEP 1</span> 自由排序：點選四個積木並輸入</div>
         </div>
-        <div class="step-note">點擊下方積木排入插槽中，並輸入數值。圖形會隨著你的輸入即時變化！</div>
+        <div class="step-note">點擊下方積木排入插槽中，並輸入數值。圖形會隨著你的輸入即時變化！<strong style="color:#e94f4f;">（完成後請務必點擊下方的「對齊確認」按鈕）</strong></div>
         
         <div class="seq-builder">
             <div style="font-size: 12px; color: var(--ink-dim); font-weight: bold; margin-bottom: 5px;">🧩 變換積木池 (請依序點擊)</div>
@@ -258,7 +260,6 @@
         </div>
       </div>
 
-      <!-- STEP 2: 最終驗收 -->
       <div class="step locked" id="step2">
         <div class="step-head">
           <div class="step-title"><span class="tag">STEP 2</span> 塔頂驗收：讀出圖形性質</div>
@@ -296,10 +297,10 @@
 </div>
 
 <script>
-// ---------- Firebase Login Logic ----------
-let playerAcc = "", playerName = "";
+let playerAcc = "", playerName = "", playerClass = "";
 
 function startGame() {
+    playerClass = document.getElementById('classSelect').value;
     playerAcc = document.getElementById('accInput').value.trim();
     playerName = document.getElementById('nameInput').value.trim();
     if (!playerAcc || !playerName) {
@@ -307,19 +308,17 @@ function startGame() {
         return;
     }
     
-    // 隱藏登入，顯示遊戲
     document.getElementById('loginSection').style.display = 'none';
     document.getElementById('gameWrap').style.display = 'block';
     
-    // 初始化遊戲
     initGame();
 }
 
 async function uploadResult(timeStr) {
     if(!window.db) return;
     try {
-        // 將成績上傳到名為 build_tower 的資料表
-        const docRef = window.fbDoc(window.db, "build_tower", playerAcc);
+        const collectionName = "Tower_" + playerClass; // 依據班級分類資料表
+        const docRef = window.fbDoc(window.db, collectionName, playerAcc);
         await window.fbSetDoc(docRef, {
             name: playerName,
             time: timeStr,
@@ -330,31 +329,28 @@ async function uploadResult(timeStr) {
     }
 }
 
-
-// ---------- Game Logic ----------
 let startTime, timerInterval, quizFinished = false;
 let qIndex = 0;
 let target = {};
 
+// 10個關卡，參考講義內容設計
 const QUESTIONS = [
-    {a:3, b:1, h:0, d:1},
-    {a:2, b:1, h:0, d:-1},
-    {a:1, b:1, h:Math.PI/2, d:0},
-    {a:2, b:1, h:Math.PI/4, d:1},
-    {a:1, b:2, h:0, d:0},
-    {a:3, b:2, h:0, d:-2},
-    {a:2, b:1, h:-Math.PI/3, d:2},
-    {a:1, b:3, h:Math.PI/6, d:0},
-    {a:4, b:1, h:Math.PI/2, d:-1},
-    {a:2, b:2, h:Math.PI/4, d:1},
+    { title: "第 1 關：上下平移", a: 1, b: 1, h: 0, d: 1 }, 
+    { title: "第 2 關：振幅伸縮", a: 2, b: 1, h: 0, d: 0 }, 
+    { title: "第 3 關：週期伸縮", a: 1, b: 2, h: 0, d: 0 }, 
+    { title: "第 4 關：左右平移", a: 1, b: 1, h: Math.PI/4, d: 0 }, 
+    { title: "第 5 關：振幅與平移", a: 2, b: 1, h: 0, d: -1 }, 
+    { title: "第 6 關：週期與平移", a: 1, b: 2, h: -Math.PI/2, d: 0 }, 
+    { title: "第 7 關：振幅與週期", a: 3, b: 0.5, h: 0, d: 0 }, 
+    { title: "第 8 關：綜合挑戰一", a: 3, b: 1, h: 0, d: -2 }, 
+    { title: "第 9 關：綜合挑戰二", a: 2, b: 2, h: Math.PI/4, d: 1 }, 
+    { title: "第 10 關：終極魔王關", a: 3, b: 2, h: Math.PI/8, d: -1 } 
 ];
 
-// 序列積木狀態
-let selectedSequence = []; // e.g. ['amp', 'period']
+let selectedSequence = []; 
 let inputValues = { amp: "", period: "", hshift: "", vshift: "" };
 let step1Done = false;
 
-// Helpers
 function parseMathInput(str){
     if(str===undefined||str===null) return NaN;
     let s = String(str).trim().toLowerCase();
@@ -373,7 +369,7 @@ function parseMathInput(str){
 function formatPi(x){
     if(Math.abs(x) < 1e-9) return "0";
     const k = x/Math.PI;
-    const denoms = [1,2,3,4,6];
+    const denoms = [1,2,3,4,6,8];
     for(const d of denoms){
         const n = k*d;
         if(Math.abs(n-Math.round(n)) < 1e-6){
@@ -420,7 +416,6 @@ function stopTimer(){
     document.getElementById('timerBadge').classList.add('stopped');
 }
 
-// Graph setup
 const svg = document.getElementById('graphSvg');
 const W=900, H=460, marginL=50, marginR=24, marginT=20, marginB=40;
 const plotW = W-marginL-marginR, plotH = H-marginT-marginB;
@@ -444,7 +439,6 @@ function buildPathD(fn){
 
 function targetFn(t){ return x=> t.a*Math.sin(t.b*(x-t.h))+t.d; }
 
-// 動態字串取代生成函數 (保證分配律正確計算)
 function buildUserFn() {
     let argStr = "x";
     let y_mult = 1;
@@ -454,7 +448,6 @@ function buildUserFn() {
         let rawVal = inputValues[op];
         let v = parseMathInput(rawVal);
         
-        // 若尚未填寫或非法，給予預設值 (不改變圖形)
         if (isNaN(v)) { v = (op === 'amp' || op === 'period') ? 1 : 0; }
 
         if (op === 'hshift') {
@@ -468,10 +461,15 @@ function buildUserFn() {
         }
     }
 
+    let innerFunc;
+    try {
+        innerFunc = new Function('x', 'return ' + argStr + ';');
+    } catch(e) {
+        innerFunc = (x) => x;
+    }
+
     return function(x) {
-        let innerX;
-        try { innerX = eval(argStr); } catch(e) { innerX = x; } // eval(x) refers to parameter x
-        return y_mult * Math.sin(innerX) + y_add;
+        return y_mult * Math.sin(innerFunc(x)) + y_add;
     }
 }
 
@@ -499,12 +497,10 @@ function initSvg(){
 function redrawTarget(){ document.getElementById('curveTarget').setAttribute('d', buildPathD(targetFn(target))); }
 function redrawYou(){ document.getElementById('curveYou').setAttribute('d', buildPathD(buildUserFn())); }
 
-// UI 邏輯：處理四格積木
 function renderSlots() {
     const slotsDiv = document.getElementById('opSlots');
     slotsDiv.innerHTML = "";
     
-    // Render placed items
     selectedSequence.forEach((op, index) => {
         let opName = document.querySelector(`.op-btn[data-type="${op}"]`).getAttribute('data-label');
         let ph = (op==='amp'||op==='period') ? "例: 2" : "例: pi/2";
@@ -519,7 +515,6 @@ function renderSlots() {
         slotsDiv.appendChild(slot);
     });
 
-    // Fill remaining empty slots
     for (let i = selectedSequence.length; i < 4; i++) {
         let empty = document.createElement('div');
         empty.className = "op-slot empty-slot";
@@ -527,7 +522,6 @@ function renderSlots() {
         slotsDiv.appendChild(empty);
     }
 
-    // Attach listeners to new inputs
     document.querySelectorAll('.op-slot input').forEach(inp => {
         inp.addEventListener('input', (e) => {
             if(!step1Done) {
@@ -554,7 +548,7 @@ document.querySelectorAll('.op-btn').forEach(btn => {
 });
 
 document.getElementById('resetSeqBtn').addEventListener('click', () => {
-    if(step1Done) return; // if locked, use overall reset
+    if(step1Done) return; 
     selectedSequence = [];
     inputValues = { amp: "", period: "", hshift: "", vshift: "" };
     document.querySelectorAll('.op-btn').forEach(btn => btn.classList.remove('used'));
@@ -562,7 +556,6 @@ document.getElementById('resetSeqBtn').addEventListener('click', () => {
     redrawYou();
 });
 
-// 重置整個題目
 function resetQuestionUI(){
     selectedSequence = [];
     inputValues = { amp: "", period: "", hshift: "", vshift: "" };
@@ -590,14 +583,13 @@ function resetQuestionUI(){
     redrawYou();
 }
 
-// 驗證按鈕 1
 document.getElementById('confirm1').addEventListener('click', ()=>{
     if(quizFinished || selectedSequence.length < 4) {
         alert("請先排滿 4 個變換積木，並填入數值喔！");
         return;
     }
     
-    let hasEmpty = selectedSequence.some(op => parseMathInput(inputValues[op]) !== parseMathInput(inputValues[op])); // isNaN check
+    let hasEmpty = selectedSequence.some(op => parseMathInput(inputValues[op]) !== parseMathInput(inputValues[op])); 
     if(hasEmpty) {
         alert("請確定每個格子都有填入正確的數字！");
         return;
@@ -644,7 +636,6 @@ function showStep1Fail(){
     box.innerHTML = `<div style="font-weight:700;color:var(--coral-deep);">⚠️ 結構不穩，沒有與虛線重疊！<br>請檢查你排列的順序，或者利用「分配律」調整你輸入的平移數值。</div>`;
 }
 
-// 驗證按鈕 2
 document.getElementById('confirm2').addEventListener('click', ()=>{
     if(quizFinished) return;
     const userMax = parseMathInput(document.getElementById('inputMax').value);
@@ -685,6 +676,7 @@ document.getElementById('reset2').addEventListener('click', ()=>{
 function rowLine(label, ok, correctVal){ return `<div class="check-row"><span class="status ${ok?'ok':'bad'}">${ok?'✓':'✗'}</span> ${label}：${ok? '正確' : ('答案是 '+correctVal)}</div>`; }
 
 function setTargetDisplay(){
+    document.getElementById('levelTitleLbl').textContent = "🎯 " + target.title; // 【修復】動態標題加回來了
     document.getElementById('targetFn').textContent = fnLabel(target.a,target.b,target.h,target.d);
     document.getElementById('qNum').textContent = qIndex+1;
     document.getElementById('progressFill').style.width = (((qIndex+1)/QUESTIONS.length)*100) + '%';
@@ -707,7 +699,6 @@ function finishQuiz(){
     document.getElementById('step1').classList.add('locked');
     document.getElementById('step2').classList.add('locked');
     
-    // 上傳成績
     uploadResult(finalTime);
 }
 
@@ -717,8 +708,8 @@ document.getElementById('restartBtn').addEventListener('click', ()=>{
     resetQuestionUI();
 });
 
-// Initialization
 function initGame() {
+    target = {...QUESTIONS[qIndex]}; 
     initSvg();
     setTargetDisplay();
     resetQuestionUI();
