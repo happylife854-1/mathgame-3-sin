@@ -217,7 +217,7 @@
         <div class="progress-tag">第 <span id="qNum">1</span> / <span id="qTotal">10</span> 題</div>
         <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:10%"></div></div>
       </div>
-      <div class="timer-badge" id="timerBadge">⏱ <span id="timerText">00:00</span></div>
+      <div class="timer-badge" id="timerBadge">⏱ <span id="timerText">00分00秒</span></div>
     </div>
   </header>
 
@@ -243,7 +243,7 @@
         <div class="step-head">
           <div class="step-title"><span class="tag">STEP 1</span> 自由排序：點選四個積木並輸入</div>
         </div>
-        <div class="step-note">點擊下方積木排入插槽中，並輸入數值。圖形會隨著你的輸入即時變化！<strong style="color:#e94f4f;">（完成後請務必點擊下方的「對齊確認」按鈕）</strong></div>
+        <div class="step-note">點擊下方積木排入插槽中，並輸入數值。圖形會隨著你的輸入即時變化！<strong style="color:#e94f4f;">（完成後請務必點擊下方的「對齊確認」按鈕，如果想測試不同組合可以點擊「清除重排」）</strong></div>
         
         <div class="seq-builder">
             <div style="font-size: 12px; color: var(--ink-dim); font-weight: bold; margin-bottom: 5px;">🧩 變換積木池 (請依序點擊)</div>
@@ -300,9 +300,9 @@
         <div class="big">🎉 恭喜完成全部 10 題！</div>
         
         <div style="background:#fff; padding:15px; border-radius:10px; display:flex; justify-content:space-around; font-size:15px; margin-bottom:15px; border: 1px solid var(--line);">
-            <div>✅答對<br><strong style="color:var(--mint-deep); font-size:22px;" id="resCorrect">10</strong></div>
+            <div>✅答對<br><strong style="color:var(--mint-deep); font-size:22px;" id="resCorrect">0</strong></div>
             <div>❌失誤<br><strong style="color:var(--coral-deep); font-size:22px;" id="resWrong">0</strong></div>
-            <div>⏱️時間<br><strong style="color:var(--violet-deep); font-size:22px;" id="resTime">00:00</strong></div>
+            <div>⏱️時間<br><strong style="color:var(--violet-deep); font-size:22px;" id="resTime">00分00秒</strong></div>
             <div>🏆總分<br><strong style="color:var(--yellow-deep); font-size:22px;" id="resScore">0</strong></div>
         </div>
         
@@ -330,7 +330,8 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbyOnzYMoflvunBkV7alRIMk
 
 let playerAcc = "", playerName = "", playerClass = "";
 let correctCount = 0; 
-let wrongCount = 0;   
+let wrongCount = 0;
+let step2Attempts = 0; // 新增：紀錄 Step 2 的嘗試次數
 
 function escapeHTML(str) {
     return String(str).replace(/[&<>'"]/g, tag => ({
@@ -442,7 +443,7 @@ function startGame() {
 
 window.onload = () => { refreshLoginLeaderboard(); };
 
-// --- 以下為遊戲核心邏輯 (完全保留) ---
+// --- 以下為遊戲核心邏輯 ---
 
 let startTime, timerInterval, quizFinished = false;
 let qIndex = 0;
@@ -502,11 +503,12 @@ function fmtNum(x){
     return x.toFixed(2);
 }
 
+// 修正：將冒號改為中文的「分、秒」，避免被試算表當成日期格式
 function fmtTime(ms){
     const totalSec = Math.floor(ms/1000);
     const mm = String(Math.floor(totalSec/60)).padStart(2,'0');
     const ss = String(totalSec%60).padStart(2,'0');
-    return mm+":"+ss;
+    return mm + "分" + ss + "秒";
 }
 
 function tickTimer(){ document.getElementById('timerText').textContent = fmtTime(Date.now()-startTime); }
@@ -636,16 +638,34 @@ document.querySelectorAll('.op-btn').forEach(btn => {
     });
 });
 
+// 修正：解除第一大題的鎖定限制，隨時都可以清除重排
 document.getElementById('resetSeqBtn').addEventListener('click', () => {
-    if(step1Done) return; 
     selectedSequence = [];
     inputValues = { amp: "", period: "", hshift: "", vshift: "" };
     document.querySelectorAll('.op-btn').forEach(btn => btn.classList.remove('used'));
     renderSlots();
+    
+    // 將所有狀態還原為未鎖定
+    step1Done = false;
+    document.querySelectorAll('.op-slot input').forEach(inp => inp.disabled = false);
+    document.getElementById('confirm1').disabled = false;
+    document.getElementById('step1').classList.remove('done');
+    document.getElementById('step2').classList.add('locked');
+    document.getElementById('confirm2').disabled = false;
+    
+    const summary = document.getElementById('step1').querySelector('.confirmed-summary'); 
+    if(summary) summary.remove();
+    const fb = document.getElementById('step1FailBox'); 
+    if(fb) fb.remove();
+    
+    document.getElementById('resultBox').className = 'result'; 
+    document.getElementById('resultBox').innerHTML = '';
+    
     redrawYou();
 });
 
 function resetQuestionUI(){
+    step2Attempts = 0; // 重置第二大題的嘗試次數
     selectedSequence = [];
     inputValues = { amp: "", period: "", hshift: "", vshift: "" };
     document.querySelectorAll('.op-btn').forEach(btn => btn.classList.remove('used'));
@@ -658,6 +678,7 @@ function resetQuestionUI(){
     document.getElementById('confirm1').disabled = false;
     document.getElementById('step1').classList.remove('done');
     document.getElementById('step2').classList.add('locked');
+    document.getElementById('confirm2').disabled = false;
     
     const summary = document.getElementById('step1').querySelector('.confirmed-summary'); 
     if(summary) summary.remove();
@@ -686,13 +707,13 @@ document.getElementById('confirm1').addEventListener('click', ()=>{
     if(matched){
         step1Done = true;
         document.querySelectorAll('.op-slot input').forEach(inp => inp.disabled = true);
-        document.getElementById('confirm1').disabled = true;
+        document.getElementById('confirm1').disabled = true; // 但 resetSeqBtn 仍可點擊
         const fb = document.getElementById('step1FailBox'); if(fb) fb.remove();
         document.getElementById('step1').classList.add('done');
         
         const summary = document.createElement('div');
         summary.className = 'confirmed-summary';
-        summary.textContent = `✓ 塔身完美對齊！`;
+        summary.textContent = `✓ 塔身完美對齊！（提示：如想測試其他解法，仍可點擊「清除重排」）`;
         document.getElementById('step1').appendChild(summary);
         document.getElementById('step2').classList.remove('locked');
     } else {
@@ -710,6 +731,11 @@ document.getElementById('confirm1').addEventListener('click', ()=>{
     }
 });
 
+// 修正：加入 showAnswer 參數，控制是否顯示正確答案
+function rowLine(label, ok, correctVal, showAnswer){ 
+    return `<div class="check-row"><span class="status ${ok?'ok':'bad'}">${ok?'✓':'✗'}</span> ${label}：${ok ? '正確' : (showAnswer ? ('答案是 ' + correctVal) : '錯誤')}</div>`; 
+}
+
 document.getElementById('confirm2').addEventListener('click', ()=>{
     if(quizFinished) return;
     const userMax = parseMathInput(document.getElementById('inputMax').value);
@@ -725,19 +751,35 @@ document.getElementById('confirm2').addEventListener('click', ()=>{
     const okPeriod = isFinite(userPeriod) && Math.abs(userPeriod-truePeriod)<tol;
     const allOk = okMax && okMin && okPeriod;
 
+    if (!allOk) {
+        wrongCount++;
+        step2Attempts++;
+    }
+
+    // 當全對，或者嘗試滿3次時，允許顯示答案
+    let showAnswerFlag = allOk || (step2Attempts >= 3);
+    
     const box = document.getElementById('resultBox');
-    box.className = 'result show ' + (allOk?'pass':'fail');
-    let rows = rowLine('最大值', okMax, fmtNum(trueMax)) + rowLine('最小值', okMin, fmtNum(trueMin)) + rowLine('週期', okPeriod, formatPi(truePeriod));
+    box.className = 'result show ' + (allOk ? 'pass' : 'fail');
+    let rows = rowLine('最大值', okMax, fmtNum(trueMax), showAnswerFlag) 
+             + rowLine('最小值', okMin, fmtNum(trueMin), showAnswerFlag) 
+             + rowLine('週期', okPeriod, formatPi(truePeriod), showAnswerFlag);
+    
+    const isLast = (qIndex === QUESTIONS.length-1);
     
     if(allOk){
         correctCount++; 
-        const isLast = (qIndex === QUESTIONS.length-1);
-        box.innerHTML = `<div style="font-size:16px;font-weight:700;color:var(--mint-deep);margin-bottom:6px;">🏗️ 過關！</div>` + rows + (isLast ? '' : `<button class="next-btn" id="nextLevelBtn">下一題 →</button>`);
-        if(!isLast) document.getElementById('nextLevelBtn').addEventListener('click', nextQuestion);
-        else finishQuiz();
+        box.innerHTML = `<div style="font-size:16px;font-weight:700;color:var(--mint-deep);margin-bottom:6px;">🏗️ 過關！</div>` + rows + (isLast ? `<button class="next-btn" onclick="finishQuiz()">查看結算</button>` : `<button class="next-btn" onclick="nextQuestion()">下一題 →</button>`);
+        document.getElementById('confirm2').disabled = true;
     } else {
-        wrongCount++;
-        box.innerHTML = `<div style="font-size:16px;font-weight:700;color:var(--coral-deep);margin-bottom:6px;">⚠️ 屬性錯誤 (失誤+1)：</div>` + rows;
+        if(step2Attempts >= 3) {
+            // 第3次答錯，直接給答案並允許跳過 (不計入答對題數)
+            box.innerHTML = `<div style="font-size:16px;font-weight:700;color:var(--coral-deep);margin-bottom:6px;">⚠️ 挑戰失敗，正確解答如下：</div>` + rows + (isLast ? `<button class="next-btn" onclick="finishQuiz()">查看結算</button>` : `<button class="next-btn" onclick="nextQuestion()">下一題 →</button>`);
+            document.getElementById('confirm2').disabled = true;
+        } else {
+            // 前2次答錯，只提示錯誤
+            box.innerHTML = `<div style="font-size:16px;font-weight:700;color:var(--coral-deep);margin-bottom:6px;">⚠️ 屬性錯誤 (失誤+1)：</div>` + rows + `<div style="margin-top:8px;color:var(--ink-dim);font-size:13px;">請修正錯誤的數值再次揭曉 (剩餘嘗試次數：${3 - step2Attempts} 次)</div>`;
+        }
     }
 });
 
@@ -745,11 +787,13 @@ document.getElementById('reset2').addEventListener('click', ()=>{
     document.getElementById('inputMax').value=''; 
     document.getElementById('inputMin').value=''; 
     document.getElementById('inputPeriod').value='';
-    document.getElementById('resultBox').className='result'; 
-    document.getElementById('resultBox').innerHTML='';
+    
+    // 若還未達到 3 次嘗試上限，才能清除並重來
+    if (step2Attempts < 3) {
+        document.getElementById('resultBox').className='result'; 
+        document.getElementById('resultBox').innerHTML='';
+    }
 });
-
-function rowLine(label, ok, correctVal){ return `<div class="check-row"><span class="status ${ok?'ok':'bad'}">${ok?'✓':'✗'}</span> ${label}：${ok? '正確' : ('答案是 '+correctVal)}</div>`; }
 
 function setTargetDisplay(){
     document.getElementById('levelTitleLbl').textContent = "🎯 " + target.title; 
