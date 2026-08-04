@@ -52,7 +52,7 @@
   .leaderboard-container { background: #fff; padding: 15px; border-radius: 12px; border: 2px solid var(--line); margin-top: 20px; text-align: left; }
   .leaderboard-container h3 { color: var(--violet-deep); margin-top: 0; font-size: 18px; text-align: center; }
   .leaderboard-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14.5px; text-align: center; }
-  .leaderboard-table th { background: #f4f6fa; padding: 10px 3px; color: var(--ink); font-weight: bold; }
+  .leaderboard-table th { background: #f4f6fa; padding: 10px 3px; color: var(--ink); font-weight: bold; position: sticky; top: 0; z-index: 10; }
   .leaderboard-table td { padding: 12px 3px; border-bottom: 1px solid var(--line); }
   
   /* 紫色高亮專屬行 */
@@ -60,6 +60,12 @@
   .highlight-row td { color: #8e44ad !important; font-weight: 900; border-top: 2px solid #9b59b6; border-bottom: 2px solid #9b59b6; }
   .highlight-row td:first-child { border-left: 2px solid #9b59b6; border-top-left-radius: 6px; border-bottom-left-radius: 6px; }
   .highlight-row td:last-child { border-right: 2px solid #9b59b6; border-top-right-radius: 6px; border-bottom-right-radius: 6px; }
+
+  /* 遊戲中排行榜微調 */
+  .game-leaderboard { margin-top: 0; border-left: 8px solid var(--yellow); box-shadow: 0 6px 18px rgba(31,37,68,.05); }
+  .game-leaderboard-scroll { max-height: 250px; overflow-y: auto; margin-top: 10px; border-radius: 8px; border: 1px solid var(--line); }
+  .refresh-btn { background: #eef0ff; border: 1px solid var(--violet); color: var(--violet-deep); padding: 4px 12px; border-radius: 6px; font-size: 13px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+  .refresh-btn:hover { background: var(--violet); color: white; }
 
   header{margin-bottom:14px;}
   .eyebrow{ font-family:'JetBrains Mono',monospace; font-size:12px;letter-spacing:.18em;color:var(--violet-deep); text-transform:uppercase;margin-bottom:6px;font-weight:700; }
@@ -173,7 +179,7 @@
     <h2>📐 三角波浪造塔工程</h2>
     <p style="color: var(--ink-dim); font-size: 14px; margin-bottom: 10px;">請先驗證工程師身分</p>
     
-    <select id="classSelect" onchange="refreshLoginLeaderboard()">
+    <select id="classSelect" onchange="fetchLeaderboard(true)">
         <option value="測試版">1. 測試版</option>
         <option value="202">2. A班(202)</option>
         <option value="203">3. B班(203)</option>
@@ -199,7 +205,7 @@
     <!-- 登入畫面的動態排行榜 -->
     <div class="leaderboard-container">
         <h3>🏆 目前排行榜 Top 10</h3>
-        <table class="leaderboard-table" id="loginLeaderboard">
+        <table class="leaderboard-table">
             <thead><tr><th>名次</th><th>名字</th><th>對/錯</th><th>總分</th><th>時間</th></tr></thead>
             <tbody id="loginRankList">
                 <tr><td colspan='5' style='color:#95a5a6;'>讀取中...</td></tr>
@@ -237,6 +243,23 @@
         </div>
         <svg id="graphSvg" viewBox="0 0 900 460" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg>
       </div>
+      
+      <!-- ⭐ 新增：遊戲中即時排行榜區塊 -->
+      <div class="leaderboard-container game-leaderboard">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+              <h3 style="margin:0; font-size: 16px;">🏆 班級即時戰況</h3>
+              <button class="refresh-btn" onclick="fetchLeaderboard(true)">🔄 手動更新</button>
+          </div>
+          <div class="game-leaderboard-scroll">
+              <table class="leaderboard-table">
+                  <thead><tr><th>名次</th><th>名字</th><th>對/錯</th><th>總分</th><th>時間</th></tr></thead>
+                  <tbody id="gameRankList">
+                      <tr><td colspan='5' style='color:#95a5a6;'>讀取中...</td></tr>
+                  </tbody>
+              </table>
+          </div>
+      </div>
+      
     </div>
 
     <div class="steps">
@@ -313,7 +336,7 @@
         
         <div class="leaderboard-container" style="background: white;">
             <h3 style="font-size: 18px; text-align: center;">🏆 該班 Top 10 排行榜</h3>
-            <table class="leaderboard-table" id="resultLeaderboard">
+            <table class="leaderboard-table">
                 <thead><tr><th>名次</th><th>名字</th><th>對/錯</th><th>總分</th><th>時間</th></tr></thead>
                 <tbody id="resultRankList"></tbody>
             </table>
@@ -335,6 +358,7 @@ let playerAcc = "", playerName = "", playerClass = "";
 let correctCount = 0; 
 let wrongCount = 0;
 let step2Attempts = 0; 
+let autoRefreshTimer = null; // 用來存放自動刷新的計時器
 
 function escapeHTML(str) {
     return String(str).replace(/[&<>'"]/g, tag => ({
@@ -345,10 +369,12 @@ function escapeHTML(str) {
 // 渲染排行榜的共用函式，加入作答次數標示
 function renderTable(tbodyId, records, highlightAcc = null) {
     const tbody = document.getElementById(tbodyId);
+    if (!tbody) return -1; // 防錯機制
+    
     tbody.innerHTML = "";
     if (records.length === 0) {
         tbody.innerHTML = "<tr><td colspan='5' style='color:#95a5a6;'>目前尚無紀錄，搶拿第一名！</td></tr>";
-        return;
+        return -1;
     }
 
     let myRank = -1;
@@ -367,17 +393,23 @@ function renderTable(tbodyId, records, highlightAcc = null) {
                 <td style="line-height:1.3;">${escapeHTML(data.name || '未知')}${playCountText}</td>
                 <td><span style="color:${isMe ? '#8e44ad' : 'var(--mint-deep)'};">${data.correct}</span> / <span style="color:var(--coral-deep);">${data.wrong}</span></td>
                 <td style="color:${isMe ? '#8e44ad' : 'var(--yellow-deep)'}; font-weight:bold;">${data.score}</td>
-                <td style="color:${isMe ? '#8e44ad' : 'var(--ink-dim)'};">${data.timeStr}</td>
+                <td style="color:${isMe ? '#8e44ad' : 'var(--ink-dim)'}; font-size:12px;">${data.timeStr}</td>
             </tr>
         `;
     });
     return myRank;
 }
 
-// 讀取首頁排行榜
-async function refreshLoginLeaderboard() {
-    const currentClass = document.getElementById('classSelect').value;
-    document.getElementById('loginRankList').innerHTML = "<tr><td colspan='5' style='color:#95a5a6;'>讀取中...</td></tr>";
+// ⭐ 統一的撈取排行榜函式 (showLoading 參數決定是否顯示「讀取中」)
+async function fetchLeaderboard(showLoading = false) {
+    const currentClass = playerClass || document.getElementById('classSelect').value;
+    
+    // 如果是手動點擊更新或剛載入，顯示讀取中狀態 (避免背景自動更新時畫面閃爍)
+    if (showLoading) {
+        const loadingHtml = "<tr><td colspan='5' style='color:#95a5a6;'>同步戰況中...</td></tr>";
+        if (!playerClass && document.getElementById('loginRankList')) document.getElementById('loginRankList').innerHTML = loadingHtml;
+        if (playerClass && document.getElementById('gameRankList')) document.getElementById('gameRankList').innerHTML = loadingHtml;
+    }
     
     try {
         let response = await fetch(GAS_URL, {
@@ -388,13 +420,23 @@ async function refreshLoginLeaderboard() {
         let result = await response.json();
         
         if(result.success) {
-            renderTable('loginRankList', result.leaderboard);
+            // 同步更新所有有顯示的排行榜，高亮目前玩家
+            renderTable('loginRankList', result.leaderboard, playerAcc);
+            renderTable('gameRankList', result.leaderboard, playerAcc);
+            renderTable('resultRankList', result.leaderboard, playerAcc);
         } else {
             console.error(result.error);
         }
     } catch (e) {
         console.error("網路連線錯誤", e);
     }
+}
+
+// 啟動遊戲時的自動刷新機制
+function startLeaderboardSync() {
+    if (autoRefreshTimer) clearInterval(autoRefreshTimer);
+    // 每 15 秒在背景自動抓取最新排名（不顯示讀取中，達到無縫同步）
+    autoRefreshTimer = setInterval(() => fetchLeaderboard(false), 15000); 
 }
 
 // 上傳並獲取最終結算排行榜
@@ -422,6 +464,8 @@ async function uploadResult(finalTimeStr, finalTimeMs, finalScore, rankScore) {
         let result = await response.json();
         if(result.success) {
             let myRank = renderTable('resultRankList', result.leaderboard, playerAcc);
+            // 順便把遊戲中畫面的一併更新到底
+            renderTable('gameRankList', result.leaderboard, playerAcc); 
             document.getElementById('resRank').innerText = myRank !== -1 ? myRank : "未上榜";
         }
     } catch (e) {
@@ -442,10 +486,13 @@ function startGame() {
     document.getElementById('loginSection').style.display = 'none';
     document.getElementById('gameWrap').style.display = 'block';
     
+    // 進入遊戲後主動抓取一次排名，並啟動背景計時器
+    fetchLeaderboard(true);
+    startLeaderboardSync();
     initGame();
 }
 
-window.onload = () => { refreshLoginLeaderboard(); };
+window.onload = () => { fetchLeaderboard(true); };
 
 // --- 以下為遊戲核心邏輯 ---
 
@@ -809,6 +856,8 @@ function nextQuestion(){
 function finishQuiz(){
     quizFinished = true;
     stopTimer();
+    if(autoRefreshTimer) clearInterval(autoRefreshTimer); // 結束遊戲時停止自動更新
+
     const finalTimeMs = Date.now() - startTime;
     const finalTimeStr = fmtTime(finalTimeMs);
     
